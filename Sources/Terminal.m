@@ -256,7 +256,11 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	myND = [[NightData alloc] initWithBuffer:(const char *)buffer];
 
 	[viewableData appendFormat:@"%@", [myND generateReport]];
-	[myND generateURL];
+	
+	//Retrieve URL and open it in the default browser of the user
+	NSString * sleeptrackerNetURL = [myND generateURL];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:sleeptrackerNetURL]];
+	
 	insertion.location = [ [ self string ] length ] ;
 	NSLog(@"- (void)insertInput:(NSString*)string");
 	

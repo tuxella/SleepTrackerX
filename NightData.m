@@ -401,9 +401,6 @@ typedef enum nightCase
 	[ret appendFormat:@"&email=%@",username];
 	[ret appendFormat:@"&pwd=%@&login=1&code=",password];
 
-	//Open an URL
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:ret]];
-	
 	return ret;
 }
 @end

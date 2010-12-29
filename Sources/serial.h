@@ -2,7 +2,7 @@
 //  serial.h
 //  SleepTrackerX
 //
-//  2010 tuxella. GPL 3+
+//  2010 tuxella after Serial Tools from Kok Chen
 //
  
 #include <IOKit/IOKitLib.h>

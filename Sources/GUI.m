@@ -2,7 +2,7 @@
 //  GUI.c
 //  SleepTrackerX
 //
-//  2010 tuxella. GPL 3+
+//  2010 tuxella after Serial Tools from Kok Chen
 //
 
 #import "GUI.h"

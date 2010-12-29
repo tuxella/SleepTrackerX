@@ -18,14 +18,6 @@
 @implementation Terminal
 
 //  Terminal.m is a subclass of NSTextView which is connected through a serial port.
-//  Anything that is typed into the view is sent out throught the serial port and anything that comes in is displayed in the view.
-//
-//  Use -openInputConnection and -openOutputConnection to open either direction of the serial port, or -openConnections to open both directions.
-//  Close the ports with -closeInputConnection, -closeOutputConnection or -closeConnections.
-//
-//  Use -setCrlfEnable to convert outgoing newlines to cr/lf pairs.
-
-//  common init code
 - (void)initTerminal
 {
 	inputfd = outputfd = -1 ;
@@ -33,8 +25,8 @@
 
 - (id)init
 {
-	self = [ super init ] ;
-	[ self initTerminal ] ;
+	self = [super init] ;
+	[self initTerminal] ;
 	return self ;
 }
 
@@ -43,47 +35,6 @@
 	self =  [ super initWithCoder:decoder ] ;
 	[ self initTerminal ] ;
 	return self ;
-}
-
-- (id)initWithFrame:(NSRect)frameRect
-{
-	self = [ super initWithFrame:frameRect ] ;
-	[ self initTerminal ] ;
-	return self ;
-}
-
-
-- (int)getTermios
-{
-	int bits ;
-	
-	if ( inputfd ) {
-		ioctl( inputfd, TIOCMGET, &bits ) ;
-		return bits ;
-	}
-	return 0 ;
-}
-
-- (void)setRTS:(Boolean)state
-{
-	int bits ;
-
-	if ( inputfd ) {
-		ioctl( inputfd, TIOCMGET, &bits ) ;
-		if ( state ) bits |= TIOCM_RTS ; else bits &= ~( TIOCM_RTS ) ;
-		ioctl( inputfd, TIOCMSET, &bits ) ;
-	}
-}
-
-- (void)setDTR:(Boolean)state
-{
-	int bits ;
-
-	if ( inputfd ) {
-		ioctl( inputfd, TIOCMGET, &bits ) ;
-		if ( state ) bits |= TIOCM_DTR ; else bits &= ~( TIOCM_DTR ) ;
-		ioctl( inputfd, TIOCMSET, &bits ) ;
-	}
 }
 //  common function to open port and set up serial port parameters
 int openPort( const char *path, int speed, int bits, int parity, int stops, int openFlags, Boolean input )
@@ -117,53 +68,16 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	return fd ;
 }
 
-- (Boolean)openInputConnection:(const char*)port baudrate:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops
-{
-	[ self closeInputConnection ] ;		//  v0.2  sanity check
-	
-	inputfd = openPort( port, baud, bits, parity, stops, ( O_RDONLY | O_NOCTTY | O_NDELAY ), YES ) ;
-	if ( inputfd < 0 ) return NO ;
-	
-	//  If the input is opened successfully, start a thread to monitor characters from it and echoing received
-	//  characters to the text view.
-	[ NSThread detachNewThreadSelector:@selector(readThread) toTarget:self withObject:nil ] ;
-
-	return YES ;
-}
-
 - (void)closeInputConnection
 {
 	if ( inputfd > 0 ) close( inputfd ) ;
 	inputfd = -1 ;
 }
 
-- (Boolean)openOutputConnection:(const char*)port baudrate:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops
-{	
-	[ self closeOutputConnection ] ;	//  v0.2  sanity check
-	
-	outputfd = openPort( port, baud, bits, parity, stops, ( O_WRONLY | O_NOCTTY | O_NDELAY ), NO ) ;
-	return ( outputfd > 0 ) ;
-}
-
 - (void)closeOutputConnection
 {
 	if ( outputfd >= 0 ) close( outputfd ) ;
 	outputfd = -1 ;
-}
-
-- (Boolean)inputConnected
-{
-	return ( inputfd > 0 ) ;
-}
-
-- (Boolean)outputConnected
-{
-	return ( outputfd > 0 ) ;
-}
-
-- (Boolean)connected
-{
-	return ( [ self inputConnected ] && [ self outputConnected ] ) ;
 }
 
 
@@ -190,15 +104,6 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	[ self closeOutputConnection ] ;
  }
 
-- (int)inputFileDescriptor
-{
-	return inputfd ;
-}
-
-- (int)outputFileDescriptor
-{
-	return outputfd ;
-}
 
 
 - (void)transmitCharacters:(NSString*)string
@@ -298,7 +203,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	string = [ [ [ NSString alloc ] initWithBytes:outBuffer length:outBitsWritten - 1 encoding:NSASCIIStringEncoding ] autorelease ] ;
 	[ self performSelectorOnMainThread:@selector(insertInput:) withObject:string waitUntilDone:YES ] ; // v0.2
 
-	[ self closeInputConnection ] ;			//  v0.2  use this instead of close()
+	[ self closeInputConnection ];
 	[ pool release ] ;
 }
 

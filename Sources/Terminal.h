@@ -18,22 +18,10 @@
 - (void)initTerminal ;
 
 - (Boolean)openConnections:(const char*)port baudrate:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops ;
-- (Boolean)openInputConnection:(const char*)port baudrate:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops ;
-- (Boolean)openOutputConnection:(const char*)port baudrate:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops ;
 
 - (void)closeConnections ;
 - (void)closeInputConnection ;
 - (void)closeOutputConnection ;
-
-- (Boolean)connected ;
-- (Boolean)inputConnected ;
-- (Boolean)outputConnected ;
-
-- (int)inputFileDescriptor ;
-- (int)outputFileDescriptor ;
-
-
-- (int)getTermios ;
 
 - (void)transmitCharacters:(NSString*)string;
 

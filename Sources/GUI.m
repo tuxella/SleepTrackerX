@@ -211,9 +211,6 @@
 	
 	[ self findPorts ] ;
 	[self loadSettings:self];
-
-//	[ NSThread detachNewThreadSelector:@selector(terminalControlThread) toTarget:self withObject:nil ] ;
-//	[ NSThread detachNewThreadSelector:@selector(snifferControlThread) toTarget:self withObject:nil ] ;
 }
 
 - (void)activate
@@ -275,7 +272,6 @@
 		{
 			[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"Cannot find usb serial port." ] defaultButton:@"OK" alternateButton:nil otherButton:nil 
 				   informativeTextWithFormat:@"No usbSerial port found, maybe you didn't install the usbserial driver or the watch isn't pluged to the computer" ] runModal ] ;
-			//NSLog(@"No usbSerial port found, maybe you didn't install the usbserial driver or the watch isn't pluged to the computer");
 			exit(-1);
 		}
 		
@@ -289,11 +285,7 @@
 			return ;
 		}
 		
-		//  successful open connection
 		terminalOpened = YES ;
-		//TODO : check crlf status
-//		[ terminal setCrlfEnable:( [ crlf state ] == NSOnState ) ] ;
-//		[ terminal setRawEnable:( [ rawCheckbox state ] == NSOnState ) ] ;
 
 		[ connectButton setTitle:@"Disconnect" ] ;
 		[ progressIndicator stopAnimation:self ] ;
@@ -314,19 +306,6 @@
 		[terminal transmitCharacters:@"V"];
 	}
 }
-
-- (void)terminalParamsChanged:(id)sender
-{
-}
-
-- (void)paRtsCheckboxChanged:(id)sender
-{
-}
-
-- (void)paDtrCheckboxChanged:(id)sender
-{
-}
-
 
 
 static int hex( NSString *str )

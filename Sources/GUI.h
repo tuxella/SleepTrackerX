@@ -59,8 +59,6 @@ typedef struct {
 - (void)saveGUI ;
 - (void)saveGUIAs ;
 
-- (void)terminalParamsChanged:(id)sender ;
-
 - (void)requestData:(id)sender ;
 
 #define kGUIWindowPosition		@"GUI Position"

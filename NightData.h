@@ -18,9 +18,9 @@
 
 - (id)initWithBuffer:(const char *)buffer;
 
-- (NSString *) generateReport;
+- (NSString *) newReport;
 
-- (NSString *) generateURL;
+- (NSString *) newURL;
 
 
 

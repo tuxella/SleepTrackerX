@@ -214,34 +214,6 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	}
 }
 
-- (void)keyDown:(NSEvent*)event
-{
-	/*
-	NSRange insertion ;
-	int inserting, deleting ;
-	
-	//  only allow appends
-	insertion.location = [ [ self string ] length ] ;
-	insertion.length = 0 ;
-	[ self setSelectedRange:insertion ] ;
-	//  don't delete beyond the beginning of a line
-	inserting = [ [ event characters ] characterAtIndex:0 ] ;
-	if ( inserting == 127 ) {
-		if ( insertion.location == 0 ) {
-			NSBeep() ;
-			return ;
-		}
-		deleting = [ [ self string ] characterAtIndex:insertion.location-1 ] ;
-		if ( deleting == 10 || deleting == 13 ) {
-			//  trying to delete past a newline character
-			NSBeep() ;
-			return ;
-		}
-	}
-	[ self transmitCharacters:[ event characters ] ] ;
-	[ super keyDown:event ] ;
-	 */
-}
 
 //  insert input (called into the main runloop from -readThread to avaoid ThreadSafe issues of NSView).
 - (void)insertInput:(NSString*)input
@@ -254,12 +226,15 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	NSMutableString *viewableData = [[NSMutableString alloc] initWithString:@""];
 	
 	myND = [[NightData alloc] initWithBuffer:(const char *)buffer];
-
-	[viewableData appendFormat:@"%@", [myND generateReport]];
+	
+	NSString * report = [myND newReport];
+	[viewableData appendFormat:@"%@", report];
+	[report release];
 	
 	//Retrieve URL and open it in the default browser of the user
-	NSString * sleeptrackerNetURL = [myND generateURL];
+	NSString * sleeptrackerNetURL = [myND newURL];
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:sleeptrackerNetURL]];
+	[sleeptrackerNetURL release];
 	
 	insertion.location = [ [ self string ] length ] ;
 	NSLog(@"- (void)insertInput:(NSString*)string");

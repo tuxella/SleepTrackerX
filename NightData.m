@@ -51,6 +51,7 @@
 	NSDate *dateB = [gregorian dateFromComponents:B];
 	
 	BOOL ret = (NSOrderedDescending == [dateA compare:dateB]);
+	[gregorian dealloc];
 	return (ret);
 	
 }
@@ -68,80 +69,15 @@
 		df = [[NSDateFormatter alloc] init];
 		[df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];			
 	}
+	[gregorian dealloc];
 	return ([df stringFromDate:date]);
 }
-
-typedef enum nightCase 
-{
-    NoneSameDay = 0,
-    NoneDayAfter = 1,
-	DuringSleeping = 2,
-	SinceAlarm = 3
-} midnightCrossing;
-
-- (int) MidnightCrossingCase
-{
-	NSDate *myNow = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
-	
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	NSDateComponents *tmpDateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:myNow];
-	
-	BOOL haveCrossedMidnight = NO;	
-	int i;
-	int pos = 0;
-	
-	NSDateComponents *lastDateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:TBDate];
-	for (i = 0; i <= [aaArray count] + 1; ++i)
-	{
-		pos ++;
-		if (0 == i)
-		{
-			tmpDateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:TBDate];
-		}
-		else
-		{
-			if ([aaArray count] == i)
-			{
-				tmpDateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:ADate];
-				//ret = 
-			}
-			else
-			{
-				tmpDateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:[aaArray objectAtIndex:i - 1]];
-			}
-		}
-		NSLog(@"tmpDate : %@; lastDate : %@", [self stringFromNSDateComponents:tmpDateComponents], [self stringFromNSDateComponents:lastDateComponents]);
-		if ( [self isAGreaterOrEqualThanB:lastDateComponents B:tmpDateComponents])
-		{
-			haveCrossedMidnight = YES;
-			break;
-		}
-		lastDateComponents = tmpDateComponents;
-	}
-	
-	if (haveCrossedMidnight)
-	{
-		//If we are still the same day as the watch publishes
-	}
-	
-	pos = SinceAlarm;
-	if (0 == i)
-	{
-		// WTF ?
-	}
-	if (1 == i)
-	{
-//		pos = 
-	}
-	return 0;
-}
-
 
 - (id)initWithBuffer:(const char *)buffer
 {
 	if (self = [super init])
 	{
-		if (nil == buffer)
+		if ((nil == buffer) || (!buffer))
 			[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"The watch didn't send any data" ] defaultButton:@"OK" alternateButton:nil otherButton:nil 
 				   informativeTextWithFormat:@"The watch didn't send any correct data. Maybe there isn't any data in the watch" ] runModal ] ;
 		int i;
@@ -196,14 +132,6 @@ typedef enum nightCase
 		
 		ADate = [df dateFromString:stringSTDate];
 
-		stringSTDate = [[[NSString alloc] initWithFormat:@"%@-%@-%d %@:%@:%@", [nf stringFromNumber:[NSNumber numberWithInt:d]],
-						 [nf stringFromNumber:[NSNumber numberWithInt:m]],
-						 [[myNow dateWithCalendarFormat:nil timeZone:nil] yearOfCommonEra],
-						 [nf stringFromNumber:[NSNumber numberWithInt:0]],
-						 [nf stringFromNumber:[NSNumber numberWithInt:0]],
-						 [nf stringFromNumber:[NSNumber numberWithInt:0]]]
-						autorelease];
-		
 		int aah, aam, aas;
 		NSDate *tmpDate;
 		aaArray = [[NSMutableArray alloc] init];
@@ -221,11 +149,6 @@ typedef enum nightCase
 							 [nf stringFromNumber:[NSNumber numberWithInt:aas]]]
 							autorelease];
 			tmpDate = [df dateFromString:stringSTDate];
-			NSLog(@"To Bed Date");
-			NSString *tmpS = [df stringFromDate:TBDate];
-			NSLog(@"Alarm Date");
-			tmpS = [df stringFromDate:ADate];
-			
 			[aaArray addObject:tmpDate];
 		}
 		NSInteger numberOfSleepIntervals = [aaArray count] + 1;
@@ -250,6 +173,7 @@ typedef enum nightCase
 		
 		NSTimeInterval sleepLength = [lastAwakening timeIntervalSinceDate:actualToBed];
 		dataA = sleepLength / numberOfSleepIntervals;
+		[myNow dealloc];
 		return(self);
 	}
 	return(nil);
@@ -257,7 +181,7 @@ typedef enum nightCase
 
 
 			  
-- (NSString *) generateReport
+- (NSString *) newReport
 {
 	NSMutableString *ret = [[NSMutableString alloc] init];
 	[ret appendFormat:@"%@", @"Sleep report : \n"];
@@ -329,7 +253,7 @@ typedef enum nightCase
 }
 
 
-- (NSString*) generateURL
+- (NSString*) newURL
 {
 	NSLog(@"URL Generation");
 	static NSDateFormatter *df;

@@ -1,0 +1,5 @@
+This is a little uploader for the Sleeptracker watch (http://www.sleeptracker.com)
+
+It get data from the watch and send them to the http://www.sleeptracker.net website that allows you to watch your sleep information in graphes.
+
+A large part of the source code is a simplfication of the Kok Chen Serial Tools utility you can found here: http://homepage.mac.com/chen/w7ay/Serial%20Tools/index.html

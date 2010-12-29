@@ -46,20 +46,13 @@ typedef struct {
 	int displayBacklog ;
 }
 
-- (id)initWithName:(NSString*)filename dictionary:(NSDictionary*)dict ;
 - (id)initWithUntitled:(NSString*)filename dictionary:(NSDictionary*)dict ;
-
-- (void)activate ;
 
 - (int)findPorts ;
 
 - (void)saveSettings:(id)sender;
 
 - (Boolean)shouldTerminate ;
-- (void)saveGUI ;
-- (void)saveGUIAs ;
-
-- (void)requestData:(id)sender ;
 
 #define kGUIWindowPosition		@"GUI Position"
 #define kTermWindowPosition		@"Term Position"

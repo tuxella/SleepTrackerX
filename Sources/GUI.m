@@ -82,13 +82,6 @@
 	return nil ;
 }
 
-- (id)initWithName:(NSString*)fname dictionary:(NSDictionary*)dict
-{
-	self = [ super init ] ;
-	if ( self ) return [ self initCommon:NO name:@"SleepTrackerX" plist:dict ] ;
-	return nil ;
-}
-
 - (id)initWithUntitled:(NSString*)fname dictionary:(NSDictionary*)dict
 {
 	self = [ super init ] ;
@@ -204,12 +197,10 @@
 
 	[self setInterface:saveSettingdButton to:@selector(saveSettings:)];
 
-	[ progressIndicator setUsesThreadedAnimation:YES ] ;
+	[progressIndicator setUsesThreadedAnimation:YES];
 	
 	
-	//  terminal window
-	
-	[ self findPorts ] ;
+	[self findPorts];
 	[self loadSettings:self];
 }
 
@@ -301,34 +292,12 @@
 	}
 	else
 	{
-		[ self connectTerminal ] ;
-		NSLog(@"Envoie de V\r");
+		[self connectTerminal] ;
+		NSLog(@"Sending V command (V1 watches)\r");
 		[terminal transmitCharacters:@"V"];
 	}
 }
 
-
-static int hex( NSString *str )
-{
-	int value ;
-	
-	sscanf( [ str cStringUsingEncoding:NSASCIIStringEncoding ], "%x", &value ) ;
-	return value & 0xff ;
-}
-
-- (void)setTextField:(NSTextField*)field forKey:(NSString*)key
-{
-	[ dictionary setObject:[ field stringValue ] forKey:key ] ;
-}
-
-- (void)setPopUpButton:(NSPopUpButton*)field forKey:(NSString*)key alternative:(NSString*)alt
-{
-	NSString *title ;
-	
-	title = [ field titleOfSelectedItem ] ;
-	if ( title == nil ) title = alt ;
-	[ dictionary setObject:title forKey:key ] ;
-}
 
 - (void)updatePlist
 {
@@ -338,72 +307,11 @@ static int hex( NSString *str )
 //  called when window is closing or app is terminating
 - (Boolean)shouldTerminate
 {
-	int reply ;
-	
-	[ self updatePlist ] ;
-	
-	if ( [ initialDictionary isEqualToDictionary:dictionary ] == NO ) {
-		reply = [ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"Do you want save changes made to %s?", 
-			[ filename cStringUsingEncoding:NSASCIIStringEncoding ] ] defaultButton:@"Save" alternateButton:@"Don't Save" otherButton:@"Cancel" informativeTextWithFormat:@"" ] 
-			runModal ] ;	
-
-		if ( reply == -1 ) /* cancel */ return NO ;
-		if ( reply == 1 ) {
-			/* save */ 
-			[ dictionary setObject:[ window stringWithSavedFrame ] forKey:kGUIWindowPosition ] ;
-			if ( unnamed ) [ self saveGUIAs ] ; else [ dictionary writeToFile:filename atomically:YES ] ;
-			[ self disconnectTerminal ] ;
-			return YES ;
-		}
-	}
-	if ( !unnamed ) {
-		//  always update window positions
-		[ initialDictionary setObject:[ window stringWithSavedFrame ] forKey:kGUIWindowPosition ] ;
-		[ initialDictionary writeToFile:filename atomically:YES ] ;
-	}
-	[ self disconnectTerminal ] ;
+	[self updatePlist];
+	[self disconnectTerminal];
 	return YES ;
 }
 
-//  local
-- (void)save
-{
-	[ self updatePlist ] ;		//  v0.2
-	[ dictionary writeToFile:filename atomically:YES ] ;
-	//  make the save dictionay our "initial" dictionary
-	[ initialDictionary autorelease ] ;
-	initialDictionary = [ [ NSMutableDictionary alloc ] initWithDictionary:dictionary ] ;
-}
-
-- (void)saveGUI
-{
-	if ( unnamed ) [ self saveGUIAs ] ; else [ self save ] ;
-}
-
-- (void)saveGUIAs
-{
-	NSSavePanel *panel ;
-	int resultCode ;
-	
-	panel = [ NSSavePanel savePanel ] ;
-	[ panel setTitle:@"Save..." ] ;   
-	[ panel setRequiredFileType:@"sertool" ] ;
-	
-	resultCode = [ panel runModalForDirectory:nil file:[ filename lastPathComponent ] ] ;
-	if ( resultCode != NSOKButton ) return ;
-	
-	if ( filename ) [ filename autorelease ] ;
-	filename = [ [ panel filename ] retain ] ;
-	[ self save ] ;
-	
-	[ window setTitle:filename ] ;
-//	[ (ApplicationDelegate*)[ NSApp delegate ] addToRecentFiles:filename ] ;
-	unnamed = NO ;
-}
-
-- (IBAction)clear:(id)sender
-{
-}
 
 //  window delegate
 - (void)windowDidBecomeMain:(NSNotification *)notification
@@ -412,7 +320,7 @@ static int hex( NSString *str )
 }
 
 //  window delegate
-- (BOOL)windowShouldClose:(id)win
+- (BOOL)windowShouldClose:(id) win
 {
 	Boolean closing ;
 	
@@ -422,28 +330,5 @@ static int hex( NSString *str )
 	exit(0);
 }
 
-
-- (void)requestData:(id)sender ; 
-{
-	NSLog(@"Send de V\r");
-	[terminal transmitCharacters:@"V"];
-
-}
-
-
-- (void)terminalControlThread
-{
-	NSAutoreleasePool *pool = [ [ NSAutoreleasePool alloc ] init ] ;
-	
-	while ( 1 ) {
-		if ( terminalOpened ) {
-			[ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.25 ] ] ;
-		}
-		else {
-			[ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:1.0 ] ] ;
-		}
-	}
-	[ pool release ] ;
-}
 
 @end

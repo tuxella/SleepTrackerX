@@ -124,8 +124,6 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 - (void)insertInput:(NSString*)input
 {
 	NSRange insertion ;
-//	NSLog("len : %d", [input length]);
-//	const char * buffer = [input cStringUsingEncoding:NSASCIIStringEncoding];
 	const char * buffer = [input cStringUsingEncoding:NSASCIIStringEncoding];
 	printf("[BEGIN]\n");
 	NSMutableString *viewableData = [[NSMutableString alloc] initWithString:@""];
@@ -142,8 +140,6 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	[sleeptrackerNetURL release];
 	
 	insertion.location = [ [ self string ] length ] ;
-	NSLog(@"- (void)insertInput:(NSString*)string");
-	
 
 	insertion.length = 0 ;
 	[ self setSelectedRange:insertion ] ;

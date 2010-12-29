@@ -69,7 +69,6 @@
 		return ;
 	}
 	activeGUI = [ recentGUIs objectAtIndex:count-1 ] ;
-	[ activeGUI activate ] ;
 }
 
 - (IBAction)newSession:(id)sender

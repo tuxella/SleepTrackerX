@@ -84,14 +84,8 @@ typedef enum nightCase
 	NSDate *myNow = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
 	
 	NSCalendar *calendar = [NSCalendar currentCalendar];
-	NSDateComponents *TBdateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:TBDate];
-	NSDateComponents *AdateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:ADate];
-	NSDateComponents *NowdateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:myNow];
 	NSDateComponents *tmpDateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:myNow];
 	
-	NSDate *_TBDate = [TBDate copy];
-	NSDate *_ADate = [ADate copy];
-	NSDate *_tmpDate;
 	BOOL haveCrossedMidnight = NO;	
 	int i;
 	int pos = 0;
@@ -202,20 +196,6 @@ typedef enum nightCase
 		
 		ADate = [df dateFromString:stringSTDate];
 
-		NSCalendar *calendar = [NSCalendar currentCalendar];
-		NSDateComponents *TBdateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:TBDate];
-		NSDateComponents *AdateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:ADate];
-		NSDateComponents *NowdateComponents = [calendar components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:myNow];
-		
-		// If we have gone to bed before midnight (and thus the clock of the ToBed date must be > the clock of the alarm date)
-		// Then we must decrement the date of the TBed date of 1 day. Excepting if we are still the same day of the two dates. Where then we let the day the wau it was
-	/*	if ((NSOrderedDescending == [TBDate compare:ADate]) && 
-			([self ThreeHoursAreOrdered:[TBdateComponents hour] m1:[TBdateComponents minute] h2:[AdateComponents hour] m2:[AdateComponents minute] h3:[NowdateComponents hour] m3:[NowdateComponents minute]]))
-		{
-			TBDate = [TBDate dateByAddingTimeInterval:(float) -60*60*24];
-		}*/
-		
-		
 		stringSTDate = [[[NSString alloc] initWithFormat:@"%@-%@-%d %@:%@:%@", [nf stringFromNumber:[NSNumber numberWithInt:d]],
 						 [nf stringFromNumber:[NSNumber numberWithInt:m]],
 						 [[myNow dateWithCalendarFormat:nil timeZone:nil] yearOfCommonEra],
@@ -223,9 +203,6 @@ typedef enum nightCase
 						 [nf stringFromNumber:[NSNumber numberWithInt:0]],
 						 [nf stringFromNumber:[NSNumber numberWithInt:0]]]
 						autorelease];
-		
-		
-		NSDate *MidnightDate =  [df dateFromString:stringSTDate];
 		
 		int aah, aam, aas;
 		NSDate *tmpDate;
@@ -342,7 +319,7 @@ typedef enum nightCase
 		if (ret)
 		{
 			NSLog(@"Error while creating dir : %d", ret);
-			return;
+			return (nil);
 		}
 	}
 	chown([opath cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);

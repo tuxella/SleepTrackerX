@@ -118,7 +118,7 @@
 		if (ret)
 		{
 			NSLog(@"Error while creating dir : %d", ret);
-			return;
+			return (@"");
 		}
 	}
 	chown([opath cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);
@@ -127,11 +127,11 @@
 	return(opath);
 }
 
-- (void) myChown:(NSString *) path
+- (void) myChown:(NSString *) filePath
 {
 	struct passwd *passwd; 
 	passwd = getpwuid ( getuid());
-	chown([path cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);
+	chown([filePath cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);
 }
 
 
@@ -446,7 +446,7 @@ static int hex( NSString *str )
 
 - (void)requestData:(id)sender ; 
 {
-	NSLog(@"Envoie de V\r");
+	NSLog(@"Send de V\r");
 	[terminal transmitCharacters:@"V"];
 
 }

@@ -80,53 +80,6 @@
 	if ( gui ) [ guis addObject:gui ] ;
 }
 
-- (void)openPath:(NSString*)path
-{
-	NSString *errorString ;
-	NSData *xmlData ;
-	NSDictionary *dict ;
-	GUI *gui ;
-	
-	xmlData = [ NSData dataWithContentsOfFile:path ] ;
-	dict = (NSDictionary*)CFPropertyListCreateFromXMLData( kCFAllocatorDefault, (CFDataRef)xmlData, kCFPropertyListImmutable, (CFStringRef*)&errorString ) ;
-	if ( dict ) {
-		gui = [ [ GUI alloc ] initWithName:path dictionary:dict ] ;
-		if ( gui ) {
-			openedFromFile = YES ;
-			[ guis addObject:gui ] ;
-			if ( [ recentFiles containsObject:path ] ) {
-				//  first remove existing path so that the recentFiles array is sorted with the latest in last place
-				[ recentFiles removeObject:path ] ;
-			}
-			[ recentFiles addObject:path ] ;
-		}		
-		return ;
-	}
-	[ [ NSAlert alertWithMessageText:@"Could not find file." defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"\nFile may have moved or have been deleted, or of the wrong type.\n" ] runModal ] ;	
-}
-
-- (IBAction)open:(id)sender
-{
-	NSOpenPanel *open ;
-	int result ;
-
-	open = [ NSOpenPanel openPanel ] ;
-	[ open setAllowsMultipleSelection:NO ] ;
-	result = [ open runModalForDirectory:nil file:nil types:nil ] ; // [ NSArray arrayWithObjects:@"avr", nil ] ] ;
-	if ( result == NSOKButton ) {
-		[ self openPath:[ [ open filenames ] objectAtIndex:0 ] ] ;
-	}
-}
-
-//  double click on sertool file
-- (BOOL)application:(NSApplication*)application openFile:(NSString*)filename
-{
-	[ self openPath:filename ] ;
-	return YES ;
-}
-
-
-
 
 
 - (void)startNotification

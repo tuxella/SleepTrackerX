@@ -16,7 +16,7 @@
 	NSMutableArray *aaArray;
 }
 
-- (id)initWithBuffer:(char *)buffer;
+- (id)initWithBuffer:(const char *)buffer;
 
 - (NSString *) generateReport;
 

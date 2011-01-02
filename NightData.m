@@ -78,8 +78,11 @@
 	if (self = [super init])
 	{
 		if ((nil == buffer) || (!buffer))
+		{
 			[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"The watch didn't send any data" ] defaultButton:@"OK" alternateButton:nil otherButton:nil 
 				   informativeTextWithFormat:@"The watch didn't send any correct data. Maybe there isn't any data in the watch" ] runModal ] ;
+			return (nil);
+		}
 		int i;
 		int d, m, w, tbh, tbmin, ah, amin, s;
 		

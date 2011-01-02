@@ -6,7 +6,7 @@
 //
 
 #import "Terminal.h"
-#import "NightData.h"
+
 
 #include <sys/select.h>
 #include <termios.h>
@@ -17,17 +17,17 @@
 
 @implementation Terminal
 
-//  Terminal.m is a subclass of NSTextView which is connected through a serial port.
 - (void)initTerminal
 {
 	inputfd = outputfd = -1 ;
+	connState = [[ConnectionState alloc] init];
 }
 
 - (id)init
 {
 	self = [super init] ;
 	[self initTerminal] ;
-	return self ;
+	return self;
 }
 
 - (id)initWithCoder:(NSCoder*)decoder
@@ -80,9 +80,39 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	outputfd = -1 ;
 }
 
+/* Quite hackish. The good solution would be to move the connectTerminal logic from GUI.m to Terminal.m or
+ * maybe a third party object that would be in charge of the control of the protocol (finitie state automaton
+ * would be overkill for the simple protocol we have to deal with)
+ */
+- (Boolean) changeConnectionParams:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops
+{
+	[self closeConnections];
+
+	pbaudrate = (NSInteger) baud;
+	pbits = (NSInteger) bits;
+	pparity = (NSInteger) parity;
+	pstopBits = (NSInteger) stops;
+	
+	inputfd = openPort([pport cString], baud, bits, parity, stops, ( O_RDONLY | O_NOCTTY | O_NDELAY ), YES ) ;
+	if ( inputfd < 0 ) return NO ;	
+	
+	outputfd = openPort([pport cString], baud, bits, parity, stops, ( O_WRONLY | O_NOCTTY | O_NDELAY ), NO ) ;
+	if ( outputfd < 0 ) {
+		[ self closeInputConnection ] ;
+		return NO ;
+	}
+	return YES;
+}
+
 
 - (Boolean)openConnections:(const char*)port baudrate:(int)baud bits:(int)bits parity:(int)parity stopBits:(int)stops
 {
+	pport = [[NSString alloc] initWithCString:port];
+	pbaudrate = (NSInteger) baud;
+	pbits = (NSInteger) bits;
+	pparity = (NSInteger) parity;
+	pstopBits = (NSInteger) stops;
+	
 	inputfd = openPort( port, baud, bits, parity, stops, ( O_RDONLY | O_NOCTTY | O_NDELAY ), YES ) ;
 	if ( inputfd < 0 ) return NO ;	
 		
@@ -119,6 +149,68 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	}
 }
 
+- (void)transmitBytes:(const char *)bytes length:(NSInteger) len
+{
+	const char *s ;
+	
+	if ( outputfd >= 0 ) {
+		s = bytes;
+		if ( *s && len > 0 ) write( outputfd, s, len );
+	}
+}
+
+
+- (void) startDataRetrieval
+{
+	// Need to close / reopen the port with new parameters ? (baudrate = 19600 ?)
+	[self sendCommand:cmdGetDataV1];
+	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+	
+	if (cstDataRetrieved == [connState state]) {
+		return;
+	}
+	[self sendCommand:cmdGetToBedAndAlarmV2];
+	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+
+	if (cstDataRetrieved != [connState state]) {
+		//Fail
+		[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"Cannot retrieve the alarm time from the watch." ] defaultButton:@"OK" alternateButton:nil otherButton:nil 
+			   informativeTextWithFormat:@"This is a case that shouldn't happen, maybe a bug ?" ] runModal ] ;
+	}
+	
+	[self sendCommand:cmdGetDataV2];
+	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+	[connState setState:cstReady];
+
+}
+
+- (void) sendCommand:(NSInteger) command
+{
+	switch (command) {
+		case cmdGetDataV1:
+			NSLog(@"Sending V command (V1 watches)\n");
+			[self transmitCharacters:@"V"];
+			[connState setState:cstWaitingForDataV1];
+			break;
+		case cmdGetDataV2:
+			NSLog(@"Sending Get Data command (V2 watches)\n");
+			char cmdData[5] = {0xC0, 0x05, 0x33, 0x00, 0};
+			[self transmitBytes:cmdData length:4];
+			[connState setState:cstWaitingForDataV2];
+			break;
+		case cmdGetToBedAndAlarmV2:
+			NSLog(@"Sending Get Bet Time and Alarm command (V2 watches)\n");
+			char cmdBedAlarm[5] = {0xC0, 0x04, 0x33, 0x00, 0};
+			[self transmitBytes:cmdBedAlarm length:4];
+			[connState setState:cstWaitingForAlarmsAndToBed];
+			break;
+		default:
+			NSLog(@"Unknown command\n");
+			[connState setState:cstReady];
+			break;
+	}
+}
+
 
 //  insert input (called into the main runloop from -readThread to avaoid ThreadSafe issues of NSView).
 - (void)insertInput:(NSString*)input
@@ -129,7 +221,12 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	NSMutableString *viewableData = [[NSMutableString alloc] initWithString:@""];
 	
 	myND = [[NightData alloc] initWithBuffer:(const char *)buffer];
+	if (nil == myND)
+	{
+		return;
+	}
 	
+	//Retrieve 
 	NSString * report = [myND newReport];
 	[viewableData appendFormat:@"%@", report];
 	[report release];
@@ -164,43 +261,49 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	FD_SET( inputfd, &basefds ) ;	
 	struct timeval oneSec;
 	oneSec.tv_sec = 1;
-
-
 	
-	while ( outBitsWritten < outBitsToWrite) {
-		FD_COPY( &basefds, &readfds ) ;
-		FD_COPY( &basefds, &errfds ) ;
-		selectCount = select( inputfd+1, &readfds, NULL, &errfds, nil ) ;
-//		selectCount = select( inputfd+1, &readfds, NULL, &errfds, &oneSec ) ;
-// TODO : Pop an error message if no data has been retrieved withing 1 second
-		if ( selectCount > 0 ) {
-			if ( FD_ISSET( inputfd, &errfds ) ) break ;		//  exit if error in stream
-			if ( selectCount > 0 && FD_ISSET( inputfd, &readfds ) )
-			{
-				//  read into buffer, cnvert to NSString and send to the NSTextView.
-				[ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.01 ] ] ;	// v0.2
-				bytesRead = read( inputfd, buffer, 1024 ) ;
-
-				for ( i = 0; (i < bytesRead) && (outBitsWritten < outBitsToWrite) ; i++ )
-				{
-					if (outBitsWritten >= 1) //prevent from getting the command sent to the watch
+	//Waiting betwwen the thread start and the first command sent
+	while (cstNotReadyYet == [connState state]) {
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]] ;
+	}  
+	NSInteger cStatus;
+	while ((cstReady != (cStatus = [connState state])) && 
+		   (cstDataRetrieved != (cStatus = [connState state]))) {
+		if (cstWaitingForDataV1 == cStatus) {
+			while ( outBitsWritten < outBitsToWrite) {
+				FD_COPY( &basefds, &readfds ) ;
+				FD_COPY( &basefds, &errfds ) ;
+				selectCount = select( inputfd+1, &readfds, NULL, &errfds, nil ) ;
+				if ( selectCount > 0 ) {
+					if ( FD_ISSET( inputfd, &errfds ) ) break ;		//  exit if error in stream
+					if ( selectCount > 0 && FD_ISSET( inputfd, &readfds ) )
 					{
-						outBuffer[outBitsWritten - 1] = buffer[i];
-						if (9 == outBitsWritten) outBitsToWrite = buffer[i] * 3 + 9 + 1; // (Hours + minutes + seconds) *3 + initial bits + V (the sent byte)
+						//  read into buffer, cnvert to NSString and send to the NSTextView.
+						[ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.01 ] ] ;
+						bytesRead = read( inputfd, buffer, 1024 ) ;
+
+						for ( i = 0; (i < bytesRead) && (outBitsWritten < outBitsToWrite) ; i++ )
+						{
+							if (outBitsWritten >= 1) //prevent from getting the command sent to the watch
+							{
+								outBuffer[outBitsWritten - 1] = buffer[i];
+								if (9 == outBitsWritten)
+									outBitsToWrite = buffer[i] * 3 + 9 + 1; // (Hours + minutes + seconds) *3 + initial bits + V (the sent byte)
+							}
+							outBitsWritten++;
+						}
 					}
-
-					outBitsWritten++;
 				}
-
 			}
+			[connState setState:cstDataRetrieved];
+			outBuffer[outBitsWritten ] = 0;
+			string = [ [ [ NSString alloc ] initWithBytes:outBuffer length:outBitsWritten - 1 encoding:NSASCIIStringEncoding ] autorelease ] ;
+			[ self performSelectorOnMainThread:@selector(insertInput:) withObject:string waitUntilDone:YES ] ;
 		}
 	}
-	outBuffer[outBitsWritten ] = 0;
-	string = [ [ [ NSString alloc ] initWithBytes:outBuffer length:outBitsWritten - 1 encoding:NSASCIIStringEncoding ] autorelease ] ;
-	[ self performSelectorOnMainThread:@selector(insertInput:) withObject:string waitUntilDone:YES ] ; // v0.2
 
-	[ self closeInputConnection ];
-	[ pool release ] ;
+	[self closeInputConnection];
+	[pool release];
 }
 
 @end

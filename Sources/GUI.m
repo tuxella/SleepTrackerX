@@ -293,8 +293,7 @@
 	else
 	{
 		[self connectTerminal] ;
-		NSLog(@"Sending V command (V1 watches)\r");
-		[terminal transmitCharacters:@"V"];
+		[terminal startDataRetrieval];
 	}
 }
 

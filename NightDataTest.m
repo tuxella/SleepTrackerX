@@ -206,7 +206,10 @@
 	[myND readAlmostAwake:bufferAA];
 	STAssertTrue(myND.nightDataIsLoaded, nil);
 	STAssertTrue(myND.alarmAndBedTimeAreLoaded, nil);
-	STAssertEqualObjects([myND sleepIntervalCount], 4, nil);
+	NSInteger gotSleepInterval = [myND sleepIntervalCount];
+	NSLog(@"Got sleep intervals : %d", gotSleepInterval);
+	NSInteger expectedInterval = 5;
+	STAssertEquals(gotSleepInterval, expectedInterval, nil);
 }
 
 - (void) testNightDataV2DataA {
@@ -241,9 +244,9 @@
 	STAssertTrue(myND.nightDataIsLoaded, nil);
 	STAssertTrue(myND.alarmAndBedTimeAreLoaded, nil);
 	
-	NSTimeInterval nightLength = 26 * 60 + 54 + 6 * 3600 + 7 * 60 + 4;
-	NSTimeInterval expectedDataA = nightLength / 4;
-	[myND coalesceAAarray];
+	NSTimeInterval nightLength = 48 * 60 + 6 * 3600 + 7 * 60 + 4;
+	NSTimeInterval expectedDataA = nightLength / 5;
+
 	STAssertEquals(myND.dataA, expectedDataA, nil);	
 }
 

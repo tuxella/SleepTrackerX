@@ -44,6 +44,7 @@
 - (BOOL) isReady;
 
 - (NSTimeInterval)dataA;
+- (NSInteger)sleepIntervalCount;
 
 - (NSString *) newReport;
 - (NSString *) newURL;

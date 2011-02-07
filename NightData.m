@@ -189,7 +189,7 @@
 	}
 	NSLog(@"raa 4");
 	[_aaArray addObject:_ADate];
-	NSLog([[NSString  alloc] initWithFormat:@"count : %d", [_aaArray count] ]);
+	NSLog(@"count : %ld", [_aaArray count]);
 
 	self.nightDataIsLoaded = YES;
 	
@@ -206,8 +206,11 @@
 	windowTimeInterval = [_window intValue] * 60; // FIXME : when window will be a NSInteger
 	if ([_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:[_aaArray count] - 2]] < windowTimeInterval)
 	{
+		NSLog(@"Removing last date (alarm date) because it is in the window: %@", _ADate);
+		_ADate = [_aaArray objectAtIndex:[_aaArray count] - 2];
 		[_aaArray removeLastObject];
 	}
+	NSLog(@"AAARay : %@", _aaArray);
 }
 
 - (BOOL) readDate:(const char *) buffer
@@ -217,10 +220,10 @@
 	return(YES);
 }
 
-- (NSInteger)sleepIntervalCount
+- (NSInteger) sleepIntervalCount
 {
 	[self coalesceAAarray];
-	if (0 == [_aaArray count]) {
+	if (1 >= [_aaArray count]) {
 		return (0);
 	}
 	else
@@ -233,10 +236,13 @@
 {
 	//FIXME : use the first and the last items of the aaArray in order to take advantage of the CoalesceArray function
 	if (0 == _dataA) {
-		NSTimeInterval nightLength;
-		nightLength = [_ADate timeIntervalSinceDate:_TBDate];
+		NSTimeInterval nightLength = 0;
+		[self coalesceAAarray];
+		NSLog(@"night length before: %ld", nightLength);
 		NSLog(@"Adate : %@, TBDate: %@", _ADate, _TBDate);
-		NSLog(@"night length : %d", nightLength);
+		nightLength = [_ADate timeIntervalSinceDate:_TBDate];
+
+		NSLog(@"night length : %f", nightLength);
 		_dataA = nightLength / [self sleepIntervalCount];
 	}
 	return(_dataA);

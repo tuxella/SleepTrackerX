@@ -5,7 +5,10 @@
 //  2010 tuxella after Serial Tools from Kok Chen
 //
 
+
+#if __OBJC__
 #import <Cocoa/Cocoa.h>
+#endif
 #import "GUI.h"
 #import <CoreFoundation/CFRunLoop.h>
 

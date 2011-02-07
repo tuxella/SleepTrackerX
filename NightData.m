@@ -73,6 +73,175 @@
 	return ([df stringFromDate:date]);
 }
 
+- (id)init
+{
+	self = [super init];
+	self.alarmAndBedTimeAreLoaded = NO;
+	self.nightDataIsLoaded = NO;
+	[self readDate:nil]; //FIXME when the date will be retrieved from the watch
+	
+	return(self);
+}
+
+
+- (BOOL)readToBedAndAlarm:(const char *)buffer
+{
+	static NSDateFormatter *df;
+	if (nil == df)
+	{
+		df = [[NSDateFormatter alloc] init];
+	}
+	//ToBedTime
+	
+	NSInteger toBedHour = buffer [16];
+	NSInteger toBedMinute = buffer [17];
+
+	[df setDateFormat:@"dd"];
+	NSString * watchDay = [df stringFromDate:_watchDate];
+	
+	[df setDateFormat:@"MM"];
+	NSString * watchMonth = [df stringFromDate:_watchDate];
+	
+	[df setDateFormat:@"yyyy"];
+	NSString * watchYear = [df stringFromDate:_watchDate];
+
+	NSString *TBDateString = [[NSString alloc] initWithFormat:@"%@-%@-%@ %d:%d:%d", watchDay, watchMonth, watchYear,
+							   toBedHour, toBedMinute, 0];
+	[df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];			
+	_TBDate = [df dateFromString:TBDateString];
+
+	//Window
+	_window = [NSNumber numberWithInt:buffer[4]];
+	
+	//Alarm
+	
+	NSInteger alarmHour = buffer [10];
+	NSInteger alarmMinute = buffer [13];
+	
+	NSString *AlarmDateString = [[NSString alloc] initWithFormat:@"%@-%@-%@ %d:%d:%d", watchDay, watchMonth, watchYear,
+							  alarmHour, alarmMinute, 0];
+	[df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];			
+	_ADate = [df dateFromString:AlarmDateString];
+	
+	
+	//Correct the Bed Time if greater than Alarm
+	if ([_TBDate isGreaterThan:_ADate])
+	{
+		_TBDate = [_TBDate dateByAddingTimeInterval:(-60 * 60 * 24)]; //To Bed must be the day before the alarm
+	}
+	
+	self.alarmAndBedTimeAreLoaded = YES;
+	return (YES);
+}
+
+- (BOOL)readAlmostAwake:(const char *)buffer
+{
+	NSLog(@"raa 1");
+	static NSDateFormatter *df;
+	if (nil == df)
+	{
+		df = [[NSDateFormatter alloc] init];
+	}
+	NSLog(@"raa 2");
+	//The day you get to bed might be the day you first awake
+	[df setDateFormat:@"dd"];
+	NSString * currentDay = [df stringFromDate:_TBDate];
+	
+	[df setDateFormat:@"MM"];
+	NSString * currentMonth = [df stringFromDate:_TBDate];
+	
+	[df setDateFormat:@"yyyy"];
+	NSString * currentYear = [df stringFromDate:_TBDate];
+	
+	NSInteger almostAwokenCount = buffer[6];
+//	NSLog([[NSString alloc] initWithFormat:@"Ready to read %d almost awoken moments", almostAwokenCount]);
+	
+	[df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+	NSLog(@"raa 3");
+	
+	if (nil == _aaArray)
+	{
+		_aaArray = [[NSMutableArray alloc] init];
+	}
+	
+	[_aaArray addObject:_TBDate];
+	NSDate * previousAaTime = _TBDate;
+	NSTimeInterval dayShift = 0;
+	
+	for(int i = 0; i < almostAwokenCount; ++i)
+	{
+		NSLog(@"raa 3.1");
+		NSInteger aaHour = buffer[7 + 3 * i + 0];
+		NSInteger aaMinute = buffer[7 + 3 * i + 1];
+		NSInteger aaSecond = buffer[7 + 3 * i + 2];
+		
+		NSDate * almostAwokenTime;
+		NSString *aaString = [[NSString alloc] initWithFormat:@"%@-%@-%@ %d:%d:%d", currentDay, currentMonth, currentYear,
+								  aaHour, aaMinute, aaSecond];
+		almostAwokenTime = [df dateFromString:aaString];
+		if ([previousAaTime isGreaterThan:almostAwokenTime])
+		{
+			dayShift = 3600 * 24;
+		}
+		almostAwokenTime = [almostAwokenTime dateByAddingTimeInterval:dayShift];
+		[_aaArray addObject:almostAwokenTime];
+		previousAaTime = _TBDate;
+	}
+	NSLog(@"raa 4");
+	[_aaArray addObject:_ADate];
+	NSLog([[NSString  alloc] initWithFormat:@"count : %d", [_aaArray count] ]);
+
+	self.nightDataIsLoaded = YES;
+	
+	NSLog(@"raa 5");
+	
+	return (YES);
+}
+/*
+ * Remove the alarm from the aa if the last awoken date is in the window
+ */
+- (void) coalesceAAarray
+{
+	NSTimeInterval windowTimeInterval;
+	windowTimeInterval = [_window intValue] * 60; // FIXME : when window will be a NSInteger
+	if ([_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:[_aaArray count] - 2]] < windowTimeInterval)
+	{
+		[_aaArray removeLastObject];
+	}
+}
+
+- (BOOL) readDate:(const char *) buffer
+{
+	//FIXME : should use the actual date from the watch, but by now we can't retrieve it...
+	_watchDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+	return(YES);
+}
+
+- (NSInteger)sleepIntervalCount
+{
+	[self coalesceAAarray];
+	if (0 == [_aaArray count]) {
+		return (0);
+	}
+	else
+	{
+		return ([_aaArray count] - 1);
+	}
+}
+
+- (NSTimeInterval)dataA
+{
+	//FIXME : use the first and the last items of the aaArray in order to take advantage of the CoalesceArray function
+	if (0 == _dataA) {
+		NSTimeInterval nightLength;
+		nightLength = [_ADate timeIntervalSinceDate:_TBDate];
+		NSLog(@"Adate : %@, TBDate: %@", _ADate, _TBDate);
+		NSLog(@"night length : %d", nightLength);
+		_dataA = nightLength / [self sleepIntervalCount];
+	}
+	return(_dataA);
+}
+
 - (id)initWithBuffer:(const char *)buffer
 {
 	if (self = [super init])
@@ -90,7 +259,7 @@
 		d = buffer[1];
 		NSLog(@"Day : %d, month : %d", m, d);
 		w = buffer [3];
-		window = [NSNumber numberWithInt:w];
+		_window = [NSNumber numberWithInt:w];
 		tbh = buffer [4];
 		tbmin = buffer [5];
 		ah = buffer [6];
@@ -124,7 +293,7 @@
 								autorelease];
 		
 		
-		TBDate =  [df dateFromString:stringSTDate];
+		_TBDate =  [df dateFromString:stringSTDate];
 		stringSTDate = [[[NSString alloc] initWithFormat:@"%@-%@-%d %@:%@:%@", [nf stringFromNumber:[NSNumber numberWithInt:d]],
 						 [nf stringFromNumber:[NSNumber numberWithInt:m]],
 						 [[myNow dateWithCalendarFormat:nil timeZone:nil] yearOfCommonEra],
@@ -133,11 +302,11 @@
 						 [nf stringFromNumber:[NSNumber numberWithInt:0]]]
 						autorelease];
 		
-		ADate = [df dateFromString:stringSTDate];
+		_ADate = [df dateFromString:stringSTDate];
 
 		int aah, aam, aas;
 		NSDate *tmpDate;
-		aaArray = [[NSMutableArray alloc] init];
+		_aaArray = [[NSMutableArray alloc] init];
 		
 		for (i = 0; i < s; ++i)
 		{
@@ -152,31 +321,35 @@
 							 [nf stringFromNumber:[NSNumber numberWithInt:aas]]]
 							autorelease];
 			tmpDate = [df dateFromString:stringSTDate];
-			[aaArray addObject:tmpDate];
+			[_aaArray addObject:tmpDate];
 		}
-		NSInteger numberOfSleepIntervals = [aaArray count] + 1;
-		NSDate * lastAwakening = ADate;
-		NSDate * actualToBed = TBDate;
+		NSInteger numberOfSleepIntervals = [_aaArray count] + 1;
+		NSDate * lastAwakening = _ADate;
+		NSDate * actualToBed = _TBDate;
 		//[ADate timeIntervalSinceDate [aaArray objectAtIndex:([aaArray count] - 1)]];
-		float timeIntBtwAlarmAndLastAwakening = [ADate timeIntervalSinceDate:[aaArray objectAtIndex:([aaArray count] - 1)]];
-		NSLog(@"WIndow = %@", window);
-		NSLog(@"TBDate = %@", TBDate);
-		NSLog(@"ADate = %@", ADate);
-		if ([window compare:[[NSNumber alloc] initWithFloat:(timeIntBtwAlarmAndLastAwakening / 60)]] == NSOrderedDescending) // last awakening in the window
+		float timeIntBtwAlarmAndLastAwakening = [_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:([_aaArray count] - 1)]];
+		NSLog(@"WIndow = %@", _window);
+		NSLog(@"TBDate = %@", _TBDate);
+		NSLog(@"ADate = %@", _ADate);
+		if ([_window compare:[[NSNumber alloc] initWithFloat:(timeIntBtwAlarmAndLastAwakening / 60)]] == NSOrderedDescending) // last awakening in the window
 		{
-			lastAwakening = [aaArray objectAtIndex:([aaArray count] - 1)];
-			numberOfSleepIntervals = [aaArray count];
+			lastAwakening = [_aaArray objectAtIndex:([_aaArray count] - 1)];
+			numberOfSleepIntervals = [_aaArray count];
 		}
-		if ([TBDate compare:lastAwakening] == NSOrderedDescending) // TBDate > Last awakening
+		if ([_TBDate compare:lastAwakening] == NSOrderedDescending) // TBDate > Last awakening
 		{
 			NSLog(@"To bed > lastAwakening");
-			actualToBed = [TBDate dateByAddingTimeInterval:(float) -60*60*24];
+			actualToBed = [_TBDate dateByAddingTimeInterval:(float) -60*60*24];
 		}
 		
 		
 		NSTimeInterval sleepLength = [lastAwakening timeIntervalSinceDate:actualToBed];
-		dataA = sleepLength / numberOfSleepIntervals;
+		_dataA = sleepLength / numberOfSleepIntervals;
 		[myNow dealloc];
+		
+		self.alarmAndBedTimeAreLoaded = YES;
+		self.nightDataIsLoaded = YES;
+		
 		return(self);
 	}
 	return(nil);
@@ -198,12 +371,12 @@
 	}
 	
 
-	tmpS = [df stringFromDate:TBDate];
+	tmpS = [df stringFromDate:_TBDate];
 	[ret appendFormat:@"%@\n", @"To Bed time"];
 	[ret appendFormat:@"%@\n", tmpS];
 
 	NSLog(@"Alarm time");
-	tmpS = [df stringFromDate:ADate];
+	tmpS = [df stringFromDate:_ADate];
 	[ret appendFormat:@"%@\n",@"Alarm time"];
 	[ret appendFormat:@"%@\n", tmpS];
 	 
@@ -211,13 +384,13 @@
 	NSLog(@"Almost awake dates");
 	[ret appendFormat:@"%@\n",@"Almost awake time"];
 
-	for (i = 0; i < [aaArray count]; ++i)
+	for (i = 0; i < [_aaArray count]; ++i)
 	{
-		tmpS = [df stringFromDate:[aaArray objectAtIndex:i]];
+		tmpS = [df stringFromDate:[_aaArray objectAtIndex:i]];
 		[ret appendFormat:@"%@\n", tmpS];
 	}
 	NSLog(@"DataA");
-	NSString *unixTime = [NSString stringWithFormat:@"%d:%d", (int)(dataA / 60), ((int)dataA % 60)];
+	NSString *unixTime = [NSString stringWithFormat:@"%d:%d", (int)(_dataA / 60), ((int)_dataA % 60)];
 	[ret appendFormat:@"%@\n",@"dataA"];
 	[ret appendFormat:@"%@\n", unixTime];
 	 
@@ -226,6 +399,7 @@
 
 - (NSString *) makeSettingFileName
 {
+	//FIXME : shoulnd't be here
 	struct passwd *passwd; 
 	passwd = getpwuid ( getuid());
 	
@@ -267,20 +441,20 @@
 	}
 	NSMutableString *ret = [[NSMutableString alloc] init];
 	[ret appendFormat:@"%@", @"http://www.sleeptracker.net/import.php?"];
-	[ret appendFormat:@"a=%@", [df stringFromDate:ADate]];
-	[ret appendFormat:@"&w=%@", window];
-	[ret appendFormat:@"&t=%@", [df stringFromDate:TBDate]];
+	[ret appendFormat:@"a=%@", [df stringFromDate:_ADate]];
+	[ret appendFormat:@"&w=%@", _window];
+	[ret appendFormat:@"&t=%@", [df stringFromDate:_TBDate]];
 	[ret appendFormat:@"&dt="];
 	int i;
 	[ret appendFormat:@"a="];
-	for (i = 0; i < [aaArray count] - 1; ++i)
+	for (i = 0; i < [_aaArray count] - 1; ++i)
 	{
-		[ret appendFormat:@"%@,", [df stringFromDate:[aaArray objectAtIndex:i]]];
+		[ret appendFormat:@"%@,", [df stringFromDate:[_aaArray objectAtIndex:i]]];
 	}
-	[ret appendFormat:@"%@", [df stringFromDate:[aaArray objectAtIndex:i]]];
+	[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
 	
 	
-	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%d", (int)dataA/60, (int)dataA%60]];
+	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%d", (int)_dataA/60, (int)_dataA%60]];
 	
 	NSString *ipath = [self makeSettingFileName];
 	
@@ -307,4 +481,20 @@
 
 	return ret;
 }
+
+- (BOOL) isReady
+{
+	return (self.nightDataIsLoaded && self.alarmAndBedTimeAreLoaded);
+}
+
+@synthesize nightDataIsLoaded = _nightDataIsLoaded;
+@synthesize alarmAndBedTimeAreLoaded = _alarmAndBedTimeAreLoaded;
+
+@synthesize dataA = _dataA;
+@synthesize window = _window;
+@synthesize aaArray = _aaArray;
+@synthesize TBDate = _TBDate;
+@synthesize ADate = _ADate;
+
+
 @end

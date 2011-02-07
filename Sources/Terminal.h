@@ -31,9 +31,9 @@
 - (void)closeInputConnection ;
 - (void)closeOutputConnection ;
 
-- (void)transmitBytes:(const char *)bytes length:(NSInteger)len;
+- (NSInteger)transmitBytes:(const char *)bytes length:(NSInteger)len;
 
-- (void)transmitCharacters:(NSString*)string;
+- (void) transmitCharacters:(NSString*)string;
 
 int openPort( const char *path, int speed, int bits, int parity, int stops, int openFlags, Boolean input ) ;
 
@@ -47,3 +47,4 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 #define cmdGetDataV1			0
 #define cmdGetDataV2			1
 #define cmdGetToBedAndAlarmV2	2
+#define cmdGetDate				3

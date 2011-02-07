@@ -8,8 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		696F39A5113A7CB4001E8670 /* STE.icns in Resources */ = {isa = PBXBuildFile; fileRef = 696F39A4113A7CB4001E8670 /* STE.icns */; };
+		6991EA9512D0D7B8006F189D /* ConnectionState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6991E88112CB8D05006F189D /* ConnectionState.m */; };
+		6991EC1912D1040A006F189D /* RetrievedBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6991EC1712D1040A006F189D /* RetrievedBuffer.m */; };
+		69CC7A2C12FBE8AC00DE5676 /* NightDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 69E0A6FE12CB371100B7DC74 /* NightDataTest.m */; };
+		69CC7A2D12FBE8B700DE5676 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		69CC7A2E12FBE8B700DE5676 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B434A70F91516800913D12 /* IOKit.framework */; };
+		69CC7A3B12FBE8DC00DE5676 /* NightData.m in Sources */ = {isa = PBXBuildFile; fileRef = 69D2BA5D112716E90032FE36 /* NightData.m */; };
+		69CC7A3C12FBE8DC00DE5676 /* ApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B434960F91511700913D12 /* ApplicationDelegate.m */; };
+		69CC7A3D12FBE8DC00DE5676 /* GUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B4355D0F91522900913D12 /* GUI.m */; };
+		69CC7A3E12FBE8DC00DE5676 /* serial.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349A0F91511700913D12 /* serial.c */; };
+		69CC7A3F12FBE8DC00DE5676 /* Terminal.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349D0F91511700913D12 /* Terminal.m */; };
+		69CC7A4012FBE8DC00DE5676 /* ConnectionState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6991E88112CB8D05006F189D /* ConnectionState.m */; };
+		69CC7A4112FBE8DC00DE5676 /* RetrievedBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6991EC1712D1040A006F189D /* RetrievedBuffer.m */; };
+		69CC7A9512FC1B5600DE5676 /* NightDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 69E0A6FE12CB371100B7DC74 /* NightDataTest.m */; };
+		69CC7A9612FC1B5600DE5676 /* NightData.m in Sources */ = {isa = PBXBuildFile; fileRef = 69D2BA5D112716E90032FE36 /* NightData.m */; };
+		69CC7A9B12FC1B5600DE5676 /* ConnectionState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6991E88112CB8D05006F189D /* ConnectionState.m */; };
+		69CC7A9C12FC1B5600DE5676 /* RetrievedBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6991EC1712D1040A006F189D /* RetrievedBuffer.m */; };
+		69CC7A9E12FC1B5600DE5676 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		69CC7A9F12FC1B5600DE5676 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B434A70F91516800913D12 /* IOKit.framework */; };
 		69D2BA5E112716E90032FE36 /* NightData.m in Sources */ = {isa = PBXBuildFile; fileRef = 69D2BA5D112716E90032FE36 /* NightData.m */; };
-		69E0A6FF12CB371100B7DC74 /* NightDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 69E0A6FE12CB371100B7DC74 /* NightDataTest.m */; };
 		84B434160F90679900913D12 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 84B434140F90679900913D12 /* MainMenu.nib */; };
 		84B4349E0F91511700913D12 /* ApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B434960F91511700913D12 /* ApplicationDelegate.m */; };
 		84B434A00F91511700913D12 /* serial.c in Sources */ = {isa = PBXBuildFile; fileRef = 84B4349A0F91511700913D12 /* serial.c */; };
@@ -22,6 +39,16 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		69CC7A2912FBE89600DE5676 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090 /* SleepTrackerX */;
+			remoteInfo = SleepTrackerX;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -31,9 +58,21 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* SleepTrackerX_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SleepTrackerX_Prefix.pch; sourceTree = "<group>"; };
 		696F39A4113A7CB4001E8670 /* STE.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = STE.icns; path = Icons/STE.icns; sourceTree = "<group>"; };
+		6991E88012CB8D05006F189D /* ConnectionState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionState.h; sourceTree = "<group>"; };
+		6991E88112CB8D05006F189D /* ConnectionState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionState.m; sourceTree = "<group>"; };
+		6991EC1612D1040A006F189D /* RetrievedBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RetrievedBuffer.h; sourceTree = "<group>"; };
+		6991EC1712D1040A006F189D /* RetrievedBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RetrievedBuffer.m; sourceTree = "<group>"; };
+		69CC789E12FBDA6D00DE5676 /* DataManipulationTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DataManipulationTests-Info.plist"; sourceTree = "<group>"; };
+		69CC799812FBDC5600DE5676 /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info copy.plist"; sourceTree = "<group>"; };
+		69CC79B812FBDED900DE5676 /* TTT-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TTT-Info.plist"; sourceTree = "<group>"; };
+		69CC79D812FBE37200DE5676 /* TestDataManipulation-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestDataManipulation-Info.plist"; sourceTree = "<group>"; };
+		69CC7A0212FBE76000DE5676 /* TestCOmpil-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestCOmpil-Info.plist"; sourceTree = "<group>"; };
+		69CC7A2612FBE89100DE5676 /* TestDataManipulation.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestDataManipulation.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		69CC7AA412FC1B5600DE5676 /* TestDataManipulation.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestDataManipulation.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		69CC7AA512FC1B5600DE5676 /* TestDataManipulation-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestDataManipulation-Info copy.plist"; sourceTree = "<group>"; };
+		69CC7B4012FDEF7A00DE5676 /* TestDataManipulation-Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestDataManipulation-Info copy 2.plist"; sourceTree = "<group>"; };
 		69D2BA5C112716E90032FE36 /* NightData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NightData.h; path = ../NightData.h; sourceTree = "<group>"; };
 		69D2BA5D112716E90032FE36 /* NightData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NightData.m; path = ../NightData.m; sourceTree = "<group>"; };
-		69E0A6E012CB368E00B7DC74 /* TestSleeptracker.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestSleeptracker.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		69E0A6E112CB368E00B7DC74 /* TestSleeptracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestSleeptracker-Info.plist"; sourceTree = "<group>"; };
 		69E0A6FD12CB371100B7DC74 /* NightDataTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightDataTest.h; sourceTree = "<group>"; };
 		69E0A6FE12CB371100B7DC74 /* NightDataTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightDataTest.m; sourceTree = "<group>"; };
@@ -53,10 +92,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		69E0A6DD12CB368E00B7DC74 /* Frameworks */ = {
+		69CC7A2312FBE89100DE5676 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69CC7A2D12FBE8B700DE5676 /* Cocoa.framework in Frameworks */,
+				69CC7A2E12FBE8B700DE5676 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69CC7A9D12FC1B5600DE5676 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69CC7A9E12FC1B5600DE5676 /* Cocoa.framework in Frameworks */,
+				69CC7A9F12FC1B5600DE5676 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,7 +145,8 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* SleepTrackerX.app */,
-				69E0A6E012CB368E00B7DC74 /* TestSleeptracker.octest */,
+				69CC7A2612FBE89100DE5676 /* TestDataManipulation.octest */,
+				69CC7AA412FC1B5600DE5676 /* TestDataManipulation.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,13 +154,19 @@
 		29B97314FDCFA39411CA2CEA /* SleepTrackerX */ = {
 			isa = PBXGroup;
 			children = (
-				69E0A6F112CB36BD00B7DC74 /* TestCases */,
+				69E0A6F112CB36BD00B7DC74 /* Tests */,
 				84B434940F91511700913D12 /* Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				69E0A6E112CB368E00B7DC74 /* TestSleeptracker-Info.plist */,
+				69CC789E12FBDA6D00DE5676 /* DataManipulationTests-Info.plist */,
+				69CC79B812FBDED900DE5676 /* TTT-Info.plist */,
+				69CC79D812FBE37200DE5676 /* TestDataManipulation-Info.plist */,
+				69CC7A0212FBE76000DE5676 /* TestCOmpil-Info.plist */,
+				69CC7AA512FC1B5600DE5676 /* TestDataManipulation-Info copy.plist */,
+				69CC7B4012FDEF7A00DE5676 /* TestDataManipulation-Info copy 2.plist */,
 			);
 			name = SleepTrackerX;
 			sourceTree = "<group>";
@@ -131,6 +188,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				84B434140F90679900913D12 /* MainMenu.nib */,
 				84B435680F91553C00913D12 /* GUI.nib */,
+				69CC799812FBDC5600DE5676 /* Info copy.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -144,13 +202,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		69E0A6F112CB36BD00B7DC74 /* TestCases */ = {
+		69E0A6F112CB36BD00B7DC74 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				69E0A6FD12CB371100B7DC74 /* NightDataTest.h */,
 				69E0A6FE12CB371100B7DC74 /* NightDataTest.m */,
 			);
-			name = TestCases;
+			name = Tests;
 			sourceTree = "<group>";
 		};
 		84B434940F91511700913D12 /* Sources */ = {
@@ -166,6 +224,10 @@
 				84B4349A0F91511700913D12 /* serial.c */,
 				84B4349C0F91511700913D12 /* Terminal.h */,
 				84B4349D0F91511700913D12 /* Terminal.m */,
+				6991E88012CB8D05006F189D /* ConnectionState.h */,
+				6991E88112CB8D05006F189D /* ConnectionState.m */,
+				6991EC1612D1040A006F189D /* RetrievedBuffer.h */,
+				6991EC1712D1040A006F189D /* RetrievedBuffer.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -173,22 +235,41 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		69E0A6DF12CB368E00B7DC74 /* TestSleeptracker */ = {
+		69CC7A2512FBE89100DE5676 /* TestDataManipulation */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 69E0A6E412CB368F00B7DC74 /* Build configuration list for PBXNativeTarget "TestSleeptracker" */;
+			buildConfigurationList = 69CC7A3A12FBE8C300DE5676 /* Build configuration list for PBXNativeTarget "TestDataManipulation" */;
 			buildPhases = (
-				69E0A6DB12CB368E00B7DC74 /* Resources */,
-				69E0A6DC12CB368E00B7DC74 /* Sources */,
-				69E0A6DD12CB368E00B7DC74 /* Frameworks */,
-				69E0A6DE12CB368E00B7DC74 /* ShellScript */,
+				69CC7A2112FBE89100DE5676 /* Resources */,
+				69CC7A2212FBE89100DE5676 /* Sources */,
+				69CC7A2312FBE89100DE5676 /* Frameworks */,
+				69CC7A2412FBE89100DE5676 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				69CC7A2A12FBE89600DE5676 /* PBXTargetDependency */,
+			);
+			name = TestDataManipulation;
+			productName = TestDataManipulation;
+			productReference = 69CC7A2612FBE89100DE5676 /* TestDataManipulation.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+		69CC7A9012FC1B5600DE5676 /* TestDataManipulation copy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69CC7AA112FC1B5600DE5676 /* Build configuration list for PBXNativeTarget "TestDataManipulation copy" */;
+			buildPhases = (
+				69CC7A9312FC1B5600DE5676 /* Resources */,
+				69CC7A9412FC1B5600DE5676 /* Sources */,
+				69CC7A9D12FC1B5600DE5676 /* Frameworks */,
+				69CC7AA012FC1B5600DE5676 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = TestSleeptracker;
-			productName = TestSleeptracker;
-			productReference = 69E0A6E012CB368E00B7DC74 /* TestSleeptracker.octest */;
+			name = "TestDataManipulation copy";
+			productName = TestDataManipulation;
+			productReference = 69CC7AA412FC1B5600DE5676 /* TestDataManipulation.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 		8D1107260486CEB800E47090 /* SleepTrackerX */ = {
@@ -219,19 +300,34 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SleepTrackerX" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SleepTrackerX */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* SleepTrackerX */,
-				69E0A6DF12CB368E00B7DC74 /* TestSleeptracker */,
+				69CC7A2512FBE89100DE5676 /* TestDataManipulation */,
+				69CC7A9012FC1B5600DE5676 /* TestDataManipulation copy */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		69E0A6DB12CB368E00B7DC74 /* Resources */ = {
+		69CC7A2112FBE89100DE5676 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69CC7A9312FC1B5600DE5676 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -252,7 +348,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		69E0A6DE12CB368E00B7DC74 /* ShellScript */ = {
+		69CC7A2412FBE89100DE5676 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		69CC7AA012FC1B5600DE5676 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -268,11 +377,29 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		69E0A6DC12CB368E00B7DC74 /* Sources */ = {
+		69CC7A2212FBE89100DE5676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69E0A6FF12CB371100B7DC74 /* NightDataTest.m in Sources */,
+				69CC7A2C12FBE8AC00DE5676 /* NightDataTest.m in Sources */,
+				69CC7A3B12FBE8DC00DE5676 /* NightData.m in Sources */,
+				69CC7A3C12FBE8DC00DE5676 /* ApplicationDelegate.m in Sources */,
+				69CC7A3D12FBE8DC00DE5676 /* GUI.m in Sources */,
+				69CC7A3E12FBE8DC00DE5676 /* serial.c in Sources */,
+				69CC7A3F12FBE8DC00DE5676 /* Terminal.m in Sources */,
+				69CC7A4012FBE8DC00DE5676 /* ConnectionState.m in Sources */,
+				69CC7A4112FBE8DC00DE5676 /* RetrievedBuffer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69CC7A9412FC1B5600DE5676 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69CC7A9512FC1B5600DE5676 /* NightDataTest.m in Sources */,
+				69CC7A9612FC1B5600DE5676 /* NightData.m in Sources */,
+				69CC7A9B12FC1B5600DE5676 /* ConnectionState.m in Sources */,
+				69CC7A9C12FC1B5600DE5676 /* RetrievedBuffer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,16 +407,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6991EA9512D0D7B8006F189D /* ConnectionState.m in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				84B4349E0F91511700913D12 /* ApplicationDelegate.m in Sources */,
 				84B434A00F91511700913D12 /* serial.c in Sources */,
 				84B434A10F91511700913D12 /* Terminal.m in Sources */,
 				84B4355F0F91522900913D12 /* GUI.m in Sources */,
 				69D2BA5E112716E90032FE36 /* NightData.m in Sources */,
+				6991EC1912D1040A006F189D /* RetrievedBuffer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		69CC7A2A12FBE89600DE5676 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* SleepTrackerX */;
+			targetProxy = 69CC7A2912FBE89600DE5676 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -319,20 +456,24 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		69E0A6E212CB368F00B7DC74 /* Debug */ = {
+		69CC7A2712FBE89100DE5676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = unsupported;
+				GCC_INPUT_FILETYPE = sourcecode.c.objc;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "TestSleeptracker-Info.plist";
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "TestDataManipulation-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -341,12 +482,12 @@
 					SenTestingKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = TestSleeptracker;
+				PRODUCT_NAME = TestDataManipulation;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
-		69E0A6E312CB368F00B7DC74 /* Release */ = {
+		69CC7A2812FBE89100DE5676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -358,7 +499,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "TestSleeptracker-Info.plist";
+				INFOPLIST_FILE = "TestDataManipulation-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -367,7 +508,63 @@
 					SenTestingKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = TestSleeptracker;
+				PRODUCT_NAME = TestDataManipulation;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		69CC7AA212FC1B5600DE5676 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_INPUT_FILETYPE = sourcecode.c.objc;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "TestDataManipulation-Info copy.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TestDataManipulation;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		69CC7AA312FC1B5600DE5676 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "TestDataManipulation-Info copy.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TestDataManipulation;
 				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};
@@ -436,11 +633,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		69E0A6E412CB368F00B7DC74 /* Build configuration list for PBXNativeTarget "TestSleeptracker" */ = {
+		69CC7A3A12FBE8C300DE5676 /* Build configuration list for PBXNativeTarget "TestDataManipulation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				69E0A6E212CB368F00B7DC74 /* Debug */,
-				69E0A6E312CB368F00B7DC74 /* Release */,
+				69CC7A2712FBE89100DE5676 /* Debug */,
+				69CC7A2812FBE89100DE5676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		69CC7AA112FC1B5600DE5676 /* Build configuration list for PBXNativeTarget "TestDataManipulation copy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69CC7AA212FC1B5600DE5676 /* Debug */,
+				69CC7AA312FC1B5600DE5676 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -21,6 +21,7 @@
 #define cstWaitingForDataV1				1
 #define cstWaitingForAlarmsAndToBed		2
 #define	cstWaitingForDataV2				3
-#define	cstTimedOut						4
-#define	cstNotReadyYet					5
-#define	cstDataRetrieved				6
+#define	cstWaitingForDate				4
+#define	cstTimedOut						5
+#define	cstNotReadyYet					6
+#define	cstDataRetrieved				7

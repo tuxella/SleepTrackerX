@@ -163,13 +163,13 @@
 	
 	for (int i = 0; i < [myND.aaArray count]; ++i)
 	{
-		NSLog([df stringFromDate:[myND.aaArray objectAtIndex:i]]);
+		NSLog(@"%s", [df stringFromDate:[myND.aaArray objectAtIndex:i]]);
 	}
 	
 	NSLog(@"Expected dates : ");	
 	for (int i = 0; i < [expectedAADate count]; ++i)
 	{
-		NSLog([df stringFromDate:[expectedAADate objectAtIndex:i]]);
+		NSLog(@"%s", [df stringFromDate:[expectedAADate objectAtIndex:i]]);
 	}
 	STAssertEqualObjects(myND.aaArray, expectedAADate, nil);	
 }
@@ -249,5 +249,69 @@
 
 	STAssertEquals(myND.dataA, expectedDataA, nil);	
 }
+
+- (void) testCoalesceAAarray {
+	NSLog(@"------[ testCoalesceAAarray");
+	const char buffer[50] = {0xC0, 0x04, 0x0E, 0x00, //header
+		14, 0,		// window1 min, sec
+		0x00, 0X00, // window2 min, sec
+		0x00, 0X00, // window3 min, sec
+		6,			//alarm 1 hour
+		0x00,		//alarm 2 hour
+		0x00,		//alarm 3 hour
+		9,			//alarm 1 min
+		0x00,		//alarm 2 min
+		0x00,		//alarm 3 min
+		23,			// to bed Hour
+		12,			// to bed min
+		0xC0};		// end token
+	NightData *myND = [[NightData alloc] init];
+	[myND readToBedAndAlarm:buffer];
+	STAssertFalse(myND.nightDataIsLoaded, nil);
+	STAssertTrue(myND.alarmAndBedTimeAreLoaded, nil);
+	
+	const char bufferAA[50] = {0xC0, 0x05, 0x33, 0x00, //header
+		0x4E, 0X04, // unknown
+		0x05, // data count
+		23, 33, 04, //data1 : h, m, s
+		02, 04, 04,
+		02, 05, 04,
+		02, 06, 04,
+		06, 07, 04,
+		0xC0};
+	[myND readAlmostAwake:bufferAA];
+	STAssertTrue(myND.nightDataIsLoaded, nil);
+	STAssertTrue(myND.alarmAndBedTimeAreLoaded, nil);
+
+	static NSDateFormatter *df;
+	if (nil == df)
+	{
+		df = [[NSDateFormatter alloc] init];
+		[df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+	}
+	
+	NSDate *myNow = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+	NSDate * expectedADate = [df dateFromString:[[NSString alloc] initWithFormat:@"%d-%d-%d %d:%d:%d",
+									   [[myNow dateWithCalendarFormat:nil timeZone:nil] dayOfMonth],		//This must be fixed when the date will be retrieved from the watch
+									   [[myNow dateWithCalendarFormat:nil timeZone:nil] monthOfYear],			//This must be fixed when the date will be retrieved from the watch
+									   [[myNow dateWithCalendarFormat:nil timeZone:nil] yearOfCommonEra],	//This must be fixed when the date will be retrieved from the watch
+									   6, 9, 0]];
+	
+	STAssertEqualObjects(myND.ADate, expectedADate, nil);
+	NSLog(@"test co 1");
+	[myND coalesceAAarray];
+	NSLog(@"test co 2");
+	expectedADate = [df dateFromString:[[NSString alloc] initWithFormat:@"%d-%d-%d %d:%d:%d",
+										[[myNow dateWithCalendarFormat:nil timeZone:nil] dayOfMonth],		//This must be fixed when the date will be retrieved from the watch
+										[[myNow dateWithCalendarFormat:nil timeZone:nil] monthOfYear],			//This must be fixed when the date will be retrieved from the watch
+										[[myNow dateWithCalendarFormat:nil timeZone:nil] yearOfCommonEra],	//This must be fixed when the date will be retrieved from the watch
+										6, 7, 4]];
+	NSLog(@"test co 3");
+	STAssertEqualObjects(myND.ADate, expectedADate, nil);
+	NSLog(@"test co 4");
+	NSLog(@"test co 5");
+	NSLog(@"]------ testCoalesceAAarray");
+}
+
 
 @end

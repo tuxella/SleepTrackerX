@@ -20,4 +20,5 @@
 - (void) testNightDataV2;
 - (void) testNightDataV2DataA;
 - (void) testAlarmAndToBed;
+- (void) testCoalesceAAarray;
 @end

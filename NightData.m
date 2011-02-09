@@ -197,6 +197,7 @@
 	
 	return (YES);
 }
+
 /*
  * Remove the alarm from the aa if the last awoken date is in the window
  */

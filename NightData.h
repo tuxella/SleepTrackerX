@@ -45,7 +45,7 @@
 
 - (NSTimeInterval)dataA;
 - (NSInteger)sleepIntervalCount;
-
+- (void) coalesceAAarray; // Published only for unit tests
 - (NSString *) newReport;
 - (NSString *) newURL;
 

@@ -349,9 +349,19 @@
 
 	NSString * sleeptrackerNetURL = [myND newURL];
 	NSLog(@"URL : %@", sleeptrackerNetURL);
-	NSString * expectedURL = @"http://www.sleeptracker.net/import.php?a=06:09&w=14&t=23:12&dt=23:33,02:04,02:05,02:06,06:07&da=0:0&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
+	NSString * expectedURL = @"http://www.sleeptracker.net/import.php?a=06:09&w=14&t=23:12&dt=23:33,02:04,02:05,02:06,06:07&da=83:00&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
 	STAssertEqualObjects(sleeptrackerNetURL, expectedURL, nil);
 }
+
+- (void) testReferenceNightDataURLV1For2DigitsZerosInDataA {
+	NSString *expected = @"http://www.sleeptracker.net/import.php?a=13:45&w=20&t=11:09&dt=11:09,11:22,11:30&da=39:00&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
+	const char buffer [18]= {12, 29, 4, 20, 11, 9, 13, 45, 3, 11, 9, 9, 11, 22, 42, 11, 30, 34};
+	
+	NightData * myND = [[NightData alloc] initWithBuffer:(const char *)&buffer];
+	STAssertEqualObjects(expected, [myND newURL], @"Error in the url generated, shouldnt be this : ");
+	
+}
+
 
 
 @end

@@ -453,7 +453,7 @@
 	[ret appendFormat:@"&t=%@", [df stringFromDate:_TBDate]];
 	[ret appendFormat:@"&dt="];
 	int i;
-//	[ret appendFormat:@"a="];
+
 	NSInteger itemsAppened = 0;
 	for (i = 0; i < [_aaArray count]; ++i)
 	{
@@ -464,14 +464,23 @@
 			if (0 < itemsAppened)
 			{
 				[ret appendString:@","];
-			}			
+			}
 			[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
 			itemsAppened ++;
 		}
 	}
+	NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
+	[formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+	[formatter setFormatWidth:2];
 	
-	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%d", (int)_dataA/60, (int)_dataA%60]];
+	[formatter setPaddingPosition:NSNumberFormatterPadBeforePrefix];
+	[formatter setPaddingCharacter:@"0"];
 	
+	//[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%d", (int)[self dataA]/60, (int)[self dataA]%60]];
+	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%@", (int)[self dataA]/60, [formatter stringFromNumber:[[NSNumber alloc] initWithInteger:((int)[self dataA] % 60)]]]];
+//	[formatter stringFromNumber:d
+	 
+	 
 	NSString *ipath = [self makeSettingFileName];
 	
 	NSString * username;

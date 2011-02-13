@@ -21,4 +21,5 @@
 - (void) testNightDataV2DataA;
 - (void) testAlarmAndToBed;
 - (void) testCoalesceAAarray;
+- (void) testReferenceNightDataURLV1For2DigitsZerosInDataA;
 @end

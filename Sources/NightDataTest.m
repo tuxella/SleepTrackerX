@@ -349,7 +349,7 @@
 
 	NSString * sleeptrackerNetURL = [myND newURL];
 	NSLog(@"URL : %@", sleeptrackerNetURL);
-	NSString * expectedURL = @"http://www.sleeptracker.net/import.php?a=06:09&w=14&t=23:12&dt=a=23:33,02:04,02:05,02:06,06:07&da=0:0&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
+	NSString * expectedURL = @"http://www.sleeptracker.net/import.php?a=06:09&w=14&t=23:12&dt=23:33,02:04,02:05,02:06,06:07&da=0:0&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
 	STAssertEqualObjects(sleeptrackerNetURL, expectedURL, nil);
 }
 

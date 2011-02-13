@@ -454,16 +454,19 @@
 	[ret appendFormat:@"&dt="];
 	int i;
 //	[ret appendFormat:@"a="];
+	NSInteger itemsAppened = 0;
 	for (i = 0; i < [_aaArray count]; ++i)
 	{
 		NSLog(@"TB : %@, A : %@, aa = %@", _TBDate, _ADate, [_aaArray objectAtIndex:i]);
-		if (![_TBDate isEqualToDate:[_aaArray objectAtIndex:i]])
+		if (![_TBDate isEqualToDate:[_aaArray objectAtIndex:i]] &&
+			![_ADate isEqualToDate:[_aaArray objectAtIndex:i]])
 		{
-			[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
-			if (i < ([_aaArray count] - 1))
+			if (0 < itemsAppened)
 			{
 				[ret appendString:@","];
-			}
+			}			
+			[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
+			itemsAppened ++;
 		}
 	}
 	

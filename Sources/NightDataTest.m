@@ -13,7 +13,7 @@
 @implementation NightDataTest
 
 - (void) testReferenceNightDataURLV1 {
-	NSString *expected = @"http://www.sleeptracker.net/import.php?a=14:00&w=20&t=11:09&dt=a=11:09,11:22,11:34&da=42:45&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
+	NSString *expected = @"http://www.sleeptracker.net/import.php?a=14:00&w=20&t=11:09&dt=11:09,11:22,11:34&da=42:45&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
 	const char buffer [18]= {12, 29, 4, 20, 11, 9, 14, 0, 3, 11, 9, 9, 11, 22, 42, 11, 34, 34};
 	
 	NightData * myND = [[NightData alloc] initWithBuffer:(const char *)&buffer];
@@ -311,6 +311,46 @@
 	NSLog(@"test co 4");
 	NSLog(@"test co 5");
 	NSLog(@"]------ testCoalesceAAarray");
+}
+
+- (void) testReferenceNightDataURLV2 {
+	const char buffer[50] = {0xC0, 0x04, 0x0E, 0x00, //header
+		14, 0,		// window1 min, sec
+		0x00, 0X00, // window2 min, sec
+		0x00, 0X00, // window3 min, sec
+		6,			//alarm 1 hour
+		0x00,		//alarm 2 hour
+		0x00,		//alarm 3 hour
+		9,			//alarm 1 min
+		0x00,		//alarm 2 min
+		0x00,		//alarm 3 min
+		23,			// to bed Hour
+		12,			// to bed min
+		0xC0};		// end token
+	NightData *myND = [[NightData alloc] init];
+	[myND readToBedAndAlarm:buffer];
+	STAssertFalse(myND.nightDataIsLoaded, nil);
+	STAssertTrue(myND.alarmAndBedTimeAreLoaded, nil);
+	
+	const char bufferAA[50] = {0xC0, 0x05, 0x33, 0x00, //header
+		0x4E, 0X04, // unknown
+		0x05, // data count
+		23, 33, 04, //data1 : h, m, s
+		02, 04, 04,
+		02, 05, 04,
+		02, 06, 04,
+		06, 07, 04,
+		0xC0};
+	[myND readAlmostAwake:bufferAA];
+	STAssertTrue(myND.nightDataIsLoaded, nil);
+	STAssertTrue(myND.alarmAndBedTimeAreLoaded, nil);
+	STAssertTrue(myND.isReady, nil);
+
+
+	NSString * sleeptrackerNetURL = [myND newURL];
+	NSLog(@"URL : %@", sleeptrackerNetURL);
+	NSString * expectedURL = @"http://www.sleeptracker.net/import.php?a=06:09&w=14&t=23:12&dt=a=23:33,02:04,02:05,02:06,06:07&da=0:0&email=sleeptrackertest@lukita.fr&pwd=123456&login=1&code=";
+	STAssertEqualObjects(sleeptrackerNetURL, expectedURL, nil);
 }
 
 

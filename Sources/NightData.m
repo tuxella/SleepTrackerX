@@ -334,7 +334,7 @@
 		NSDate * lastAwakening = _ADate;
 		NSDate * actualToBed = _TBDate;
 		//[ADate timeIntervalSinceDate [aaArray objectAtIndex:([aaArray count] - 1)]];
-		float timeIntBtwAlarmAndLastAwakening = [_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:([_aaArray count] - 1)]];
+		NSTimeInterval timeIntBtwAlarmAndLastAwakening = [_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:([_aaArray count] - 1)]];
 		NSLog(@"WIndow = %@", _window);
 		NSLog(@"TBDate = %@", _TBDate);
 		NSLog(@"ADate = %@", _ADate);
@@ -453,13 +453,19 @@
 	[ret appendFormat:@"&t=%@", [df stringFromDate:_TBDate]];
 	[ret appendFormat:@"&dt="];
 	int i;
-	[ret appendFormat:@"a="];
-	for (i = 0; i < [_aaArray count] - 1; ++i)
+//	[ret appendFormat:@"a="];
+	for (i = 0; i < [_aaArray count]; ++i)
 	{
-		[ret appendFormat:@"%@,", [df stringFromDate:[_aaArray objectAtIndex:i]]];
+		NSLog(@"TB : %@, A : %@, aa = %@", _TBDate, _ADate, [_aaArray objectAtIndex:i]);
+		if (![_TBDate isEqualToDate:[_aaArray objectAtIndex:i]])
+		{
+			[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
+			if (i < ([_aaArray count] - 1))
+			{
+				[ret appendString:@","];
+			}
+		}
 	}
-	[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
-	
 	
 	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%d", (int)_dataA/60, (int)_dataA%60]];
 	
@@ -489,7 +495,7 @@
 	return ret;
 }
 
-- (BOOL) isReady
+- (BOOL) isReady //FIXME: should be a 
 {
 	return (self.nightDataIsLoaded && self.alarmAndBedTimeAreLoaded);
 }

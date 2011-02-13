@@ -15,7 +15,7 @@
 
 - (void) testReferenceNightDataURLV1;
 - (void) testloadedStatusOK;
-//- (void) testReferenceNightDataURLV2;
+- (void) testReferenceNightDataURLV2;
 - (void) testNightIntervalsCount;
 - (void) testNightDataV2;
 - (void) testNightDataV2DataA;

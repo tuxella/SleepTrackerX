@@ -259,10 +259,8 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 }
 
 
-//  insert input (called into the main runloop from -readThread to avaoid ThreadSafe issues of NSView).
 - (void)processData:(RetrievedBuffer *)input
 {
-//	const char * buffer = [input cStringUsingEncoding:NSASCIIStringEncoding];
 	unsigned char * buffer;
 	buffer = (unsigned char *) [[input buffer] bytes];
 	NSMutableString *viewableData = [[NSMutableString alloc] initWithString:@""];

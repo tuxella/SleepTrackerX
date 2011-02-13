@@ -20,11 +20,13 @@
 	
 	BOOL _alarmAndBedTimeAreLoaded;
 	BOOL _nightDataIsLoaded;
+	BOOL _isReady;
 }
 
 
 @property BOOL alarmAndBedTimeAreLoaded;
 @property BOOL nightDataIsLoaded;
+@property(readonly) BOOL isReady;
 
 //These properties are only used for the unit tests by now
 @property(readonly) NSTimeInterval dataA;

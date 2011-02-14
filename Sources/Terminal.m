@@ -169,7 +169,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 {
 	// Need to close / reopen the port with new parameters ? (baudrate = 19600 ?)
 	[NSThread detachNewThreadSelector:@selector(readThreadDataV1) toTarget:self withObject:nil] ;
-	
+	lastDataHasBeenProcessed = NO;
 	[self sendCommand:cmdGetDataV1];
 	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:2]];
 	
@@ -197,6 +197,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	[self sendCommand:cmdGetDate];
 	[NSThread detachNewThreadSelector:@selector(readThreadDebug) toTarget:self withObject:nil] ;
 	*/
+	lastDataHasBeenProcessed = NO;
 	[self sendCommand:cmdGetToBedAndAlarmV2];
 	
 	[NSThread detachNewThreadSelector:@selector(readThreadBedTime) toTarget:self withObject:nil] ;
@@ -208,15 +209,20 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 //		[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"Cannot retrieve the alarm time from the watch." ] defaultButton:@"OK" alternateButton:nil otherButton:nil 
 //			   informativeTextWithFormat:@"This is a case that shouldn't happen, maybe a bug ?" ] runModal ] ;
 	}
-	while ((cstDataRetrieved != [connState state]) &&
+	while ((cstDataProcessed != [connState state]) &&
 		   (cstTimedOut != [connState state])) {
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];		
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		NSLog(@"Waiting for the ToBedDate to be read");
 	}
+	while (!lastDataHasBeenProcessed) {
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+		NSLog(@"Waiting for the ToBedDate to be processed");
+	}	
+	lastDataHasBeenProcessed = NO;
 	[self sendCommand:cmdGetDataV2];	
 	[NSThread detachNewThreadSelector:@selector(readThreadDataV2) toTarget:self withObject:nil] ;
-
 //	[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
-	while ((cstDataRetrieved != [connState state]) &&
+	while ((cstDataProcessed != [connState state]) &&
 		   (cstTimedOut != [connState state])) {
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];		
 	}
@@ -296,7 +302,8 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 		default:
 			break;
 	}
-	
+	[connState setState:cstDataProcessed];
+	lastDataHasBeenProcessed = YES;
 	if ([myND isReady]) {
 		//Retrieve
 		NSString * report = [myND newReport];
@@ -441,6 +448,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 							(0xC0 != buffer[18])) // Here we expect the packet to always be of the same size
 						{
 							NSLog(@"The packet got as an answer to the Get To Bed command doesn't match the expected format");
+							timedOut = YES;
 						}
 						else {
 							readData = YES;
@@ -463,9 +471,9 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 				[rBuffer setBuffer:(unsigned char *)buffer length:19];
 				[rBuffer setLength:19];
 				[rBuffer setBufferKind:rbuToBedAndAlarm];
-				
-				[ self performSelectorOnMainThread:@selector(processData:) withObject:rBuffer waitUntilDone:NO ] ;
-				return(NO);
+				[self processData:rBuffer];
+				//[ self performSelectorOnMainThread:@selector(processData:) withObject:rBuffer waitUntilDone:NO ] ;
+				return(YES);
 			}
 		}
 	}
@@ -532,7 +540,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 				[rBuffer setBufferKind:rbuToBedAndAlarm];
 				
 				[ self performSelectorOnMainThread:@selector(processData:) withObject:rBuffer waitUntilDone:NO ] ;
-				return(NO);
+				return(YES);
 			}
 		}
 	}
@@ -558,7 +566,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	//Waiting betwwen the thread start and the first command sent
 	while (cstNotReadyYet == [connState state]) {
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]] ;
-	}  
+	}
 	NSInteger cStatus;
 	BOOL timedOut = NO;
 	//////////////////// Read DATA V2
@@ -567,34 +575,24 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 		if (cstWaitingForDataV2 == cStatus) {
 			timedOut = NO;
 			while ((outBitsWritten < outBitsToWrite) && (!timedOut)) {
-				FD_COPY( &basefds, &readfds ) ;
-				FD_COPY( &basefds, &errfds ) ;
-				selectCount = select( inputfd+1, &readfds, NULL, &errfds, &oneSec) ;
-				if ( selectCount > 0 ) {
-					if ( FD_ISSET( inputfd, &errfds ) ) break ;		//  exit if error in stream
-					if ( selectCount > 0 && FD_ISSET( inputfd, &readfds ) )
+				if (FD_ISSET( inputfd + 1, &readfds ))
+				{
+					[ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.01 ] ] ;
+					bytesRead = read( inputfd, buffer, 1024 ) ;
+					if ((0 == buffer[0]) && (0xC0 == buffer[1]))
 					{
-						//  read into buffer, cnvert to NSString and send to the NSTextView.
-						[ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.01 ] ] ;
-						bytesRead = read( inputfd, buffer, 1024 ) ;
-						if ((0 == buffer[0]) && (0xC0 == buffer[1]))
-						{
-							buffer = &(buffer[1]);
-							-- bytesRead;
-						}
-						if ((0 == outBitsWritten) && (4 < bytesRead))
-						{
-							outBitsToWrite = buffer[2] + 0x100 * buffer[3] + 5;
-						}						
-						for(int i = 0; i < bytesRead; ++i)
-						{
-							outBuffer[outBitsWritten + i + outBitsWritten] = buffer[i];
-						}
-						outBitsWritten += bytesRead;
+						buffer = &(buffer[1]);
+						-- bytesRead;
 					}
-					else {
-						timedOut = YES;
+					if ((0 == outBitsWritten) && (4 < bytesRead))
+					{
+						outBitsToWrite = buffer[2] + 0x100 * buffer[3] + 5;
+					}						
+					for(int i = 0; i < bytesRead; ++i)
+					{
+						outBuffer[outBitsWritten + i + outBitsWritten] = buffer[i];
 					}
+					outBitsWritten += bytesRead;
 				}
 				else {
 					//NSInteger err = errno;
@@ -623,12 +621,13 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 				[rBuffer setLength:bytesRead];
 				[rBuffer setBufferKind:rbuDataV2];
 			
-				[ self performSelectorOnMainThread:@selector(processData:) withObject:rBuffer waitUntilDone:NO ] ;
+				//[ self performSelectorOnMainThread:@selector(processData:) withObject:rBuffer waitUntilDone:NO ] ;
+				[self processData:rBuffer];
 			}
 		}
 	}
 	free(buffer);
-	return (NO);
+	return (YES);
 }
 
 

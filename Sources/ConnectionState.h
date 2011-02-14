@@ -25,3 +25,4 @@
 #define	cstTimedOut						5
 #define	cstNotReadyYet					6
 #define	cstDataRetrieved				7
+#define	cstDataProcessed				8

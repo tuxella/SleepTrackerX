@@ -20,7 +20,8 @@
 	NSInteger pbaudrate;
 	NSInteger pbits;
 	NSInteger pparity;
-	NSInteger pstopBits;	
+	NSInteger pstopBits;
+	BOOL lastDataHasBeenProcessed;
 }
 
 - (void)initTerminal ;

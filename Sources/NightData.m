@@ -189,7 +189,7 @@
 	}
 	NSLog(@"raa 4");
 	[_aaArray addObject:_ADate];
-	NSLog(@"count : %ld", [_aaArray count]);
+	NSLog(@"count : %d", [_aaArray count]);
 
 	self.nightDataIsLoaded = YES;
 	
@@ -239,7 +239,7 @@
 	if (0 == _dataA) {
 		NSTimeInterval nightLength = 0;
 		[self coalesceAAarray];
-		NSLog(@"night length before: %ld", nightLength);
+		NSLog(@"night length before: %@", nightLength);
 		NSLog(@"Adate : %@, TBDate: %@", _ADate, _TBDate);
 		nightLength = [_ADate timeIntervalSinceDate:_TBDate];
 
@@ -476,10 +476,7 @@
 	[formatter setPaddingPosition:NSNumberFormatterPadBeforePrefix];
 	[formatter setPaddingCharacter:@"0"];
 	
-	//[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%d", (int)[self dataA]/60, (int)[self dataA]%60]];
 	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%@", (int)[self dataA]/60, [formatter stringFromNumber:[[NSNumber alloc] initWithInteger:((int)[self dataA] % 60)]]]];
-//	[formatter stringFromNumber:d
-	 
 	 
 	NSString *ipath = [self makeSettingFileName];
 	

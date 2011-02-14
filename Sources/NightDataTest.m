@@ -18,7 +18,6 @@
 	
 	NightData * myND = [[NightData alloc] initWithBuffer:(const char *)&buffer];
 	STAssertEqualObjects(expected, [myND newURL], @"Error in the url generated, shouldnt be this : ");
-	
 }
 
 - (void) testloadedStatusOK {
@@ -362,6 +361,18 @@
 	
 }
 
+/*- (void) testReferenceNightDataReportV2 {
+	* Here should be tested a sample report for the V2 watches.
+	* No will now, it should use the date of the time the test is launched since the NightData class cannot handle GetDate data yet.
+	*
+}*/
 
+- (void) testReferenceNightDataReportV1 {
+	NSString *expected = @"Sleep report : \nTo Bed time\n29-12-2011 11:09:00\nAlarm time\n29-12-2011 14:00:00\nAlmost awake time\n29-12-2011 11:09:09\n29-12-2011 11:22:42\n29-12-2011 11:34:34\ndataA\n42:45\n";
+	const char buffer [18]= {12, 29, 4, 20, 11, 9, 14, 0, 3, 11, 9, 9, 11, 22, 42, 11, 34, 34};
+	
+	NightData * myND = [[NightData alloc] initWithBuffer:(const char *)&buffer];
+	STAssertEqualObjects(expected, [myND newReport], nil);
+}
 
 @end

@@ -482,8 +482,8 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 
 - (BOOL) readThreadDataV2
 {
-	fd_set readfds, basefds, errfds ;
-	int selectCount, bytesRead;
+	fd_set readfds, basefds;
+	int bytesRead;
 	unsigned char * buffer = malloc(1024);
 	unsigned char outBuffer[250];
 	for (int i = 0; i < 250; ++i) outBuffer[i] = 0;
@@ -495,7 +495,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 	struct timeval oneSec;
 	oneSec.tv_sec = 1;
 	
-	//Waiting betwwen the thread start and the first command sent
+	//Waiting between the thread start and the first command sent
 	while (cstNotReadyYet == [connState state]) {
 		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]] ;
 	}
@@ -546,8 +546,6 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 			if (!timedOut)
 			{
 				[connState setState:cstDataRetrieved];
-				//				[ self performSelectorOnMainThread:@selector(processData:) withObject:toBedBuffer waitUntilDone:NO ] ;
-				
 				RetrievedBuffer * rBuffer = [[RetrievedBuffer alloc] init];
 				[rBuffer setBuffer:(unsigned char *)outBuffer length:bytesRead];
 				[rBuffer setLength:bytesRead];

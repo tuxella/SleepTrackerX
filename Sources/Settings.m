@@ -46,12 +46,11 @@
 	return(opath);
 }
 
-
-+ (NSString *) copyUsername
++ (NSString *) copyValue:(NSString *) objectKey
 {
 	NSString *ipath = [self makeSettingFileName];
 	
-	NSString * username;
+	NSString * ret;
 	
 	struct stat buf;
 	NSInteger statResult;
@@ -60,78 +59,64 @@
 	if (!statResult) // File exists
 	{
 		NSMutableDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:ipath];
-		username = [[plistData valueForKey:@"Username"] copy];
-		//[plistData release];
+		ret = [[plistData valueForKey:objectKey] copy];
+
 	}
 	else {
-		username = [[NSString alloc] initWithFormat:@"No username"];
+		ret = [[NSString alloc] initWithFormat:@"No %@", objectKey];
 	}
 	
-	return(username);
+	return(ret);
 }
 
-+ (NSString *) copyPassword
-{
-	NSString *ipath = [self makeSettingFileName];
-	
-	NSString * password;
-	
-	struct stat buf;
-	NSInteger statResult;
-	statResult = stat ([ipath cStringUsingEncoding:NSASCIIStringEncoding], &buf);
-	
-	if (!statResult) // File exists
-	{
-		NSMutableDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:ipath];
-		password = [[plistData valueForKey:@"Password"] copy];
-		//[plistData release];
-	}
-	else {
-		password = [[NSString alloc] initWithFormat:@"No password"];
-	}
-
-	return(password);
-}
-
-+ (BOOL) setPassword:(NSString *) password;
++ (BOOL) setValue:(NSString *) value objectKey:(NSString *) objectKey
 {
 	NSString *opath = [self makeSettingFileName];
 	
-//	NSMutableDictionary *plistData = [[NSMutableDictionary alloc] init];
-	NSMutableDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:opath];
-
-	
-	if ((nil != password) && ([password length]))
+	struct stat buf;
+	NSInteger statResult;
+	statResult = stat ([opath cStringUsingEncoding:NSASCIIStringEncoding], &buf);
+	NSMutableDictionary *plistData;
+	if (!statResult) // File exists
 	{
-		NSLog(@"Pass : %@", password);
-		[plistData setObject:password forKey:@"Password"];
+		plistData = [NSDictionary dictionaryWithContentsOfFile:opath];
+	}
+	else {
+		plistData = [[NSMutableDictionary alloc] init];
 	}
 	
+	if ((nil != value) && ([value length]) && (nil != objectKey) && ([objectKey length]))
+	{
+		NSLog(@"%@ : %@", objectKey, value);
+		[plistData setObject:value forKey:objectKey];
+		
+	}
+	NSLog(@"Saved setting into file : %@", opath);
 	[plistData writeToFile:opath atomically: YES];
-	[plistData release];
 	[self chownFromPath:opath];
 	
 	return(YES);
 }
 
++ (NSString *) copyUsername
+{
+	return([self copyValue:@"Username"]);
+}
+
++ (NSString *) copyPassword
+{
+	return([self copyValue:@"Password"]);
+}
+
++ (BOOL) setPassword:(NSString *) password;
+{
+	[self setValue:password objectKey:@"Password"];
+	return(YES);
+}
+
 + (BOOL) setUsername:(NSString *) username;
 {
-	NSString *opath = [self makeSettingFileName];
-	
-//	NSMutableDictionary *plistData = [[NSMutableDictionary alloc] init];
-	NSMutableDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:opath];
-
-	
-	if ((nil != username) && ([username length]))
-	{
-		NSLog(@"username : %@", username);
-		[plistData setObject:username forKey:@"Username"];
-	}
-	
-	[plistData writeToFile:opath atomically: YES];
-	[plistData release];
-	[self chownFromPath:opath];
-	
+	[self setValue:username objectKey:@"Username"];
 	return(YES);
 }
 

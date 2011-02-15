@@ -9,6 +9,7 @@
 #import "ApplicationDelegate.h"
 #include "serial.h"
 #import "Terminal.h"
+#import "Settings.h"
 
 #include <termios.h>
 #include <pwd.h>
@@ -89,83 +90,28 @@
 	return nil ;
 }
 
-- (NSString *) makeSettingFileName
-{
-	struct passwd *passwd; 
-	passwd = getpwuid ( getuid());
-	
-	NSString * userName = [[NSString alloc] initWithCString:passwd->pw_name encoding:NSASCIIStringEncoding] ;
-	
-	
-	NSString *opath = @"/Users/";
-	opath = [opath stringByAppendingString:userName];
-	opath = [opath stringByAppendingString:@"/.SleepTrackerX/"];
-	
-	struct stat buf;
-	int i = stat ( [opath cStringUsingEncoding:NSASCIIStringEncoding], &buf );
-	
-	if ( i ) // File exists
-	{
-		int ret = mkdir([opath cStringUsingEncoding:NSASCIIStringEncoding], S_IRWXU);
-		
-		if (ret)
-		{
-			NSLog(@"Error while creating dir : %d", ret);
-			return (@"");
-		}
-	}
-	chown([opath cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);
-	opath = [opath stringByAppendingString:@"Settings.plist"];	
-	
-	return(opath);
-}
-
-- (void) myChown:(NSString *) filePath
-{
-	struct passwd *passwd; 
-	passwd = getpwuid ( getuid());
-	chown([filePath cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);
-}
-
 
 - (void) saveSettings:(id)sender
 {
 
-	NSString *opath = [self makeSettingFileName];
-
-	NSMutableDictionary *plistData = [[NSMutableDictionary alloc] init];
-	
-	if (nil != pass)
+	if (nil != passTextField)
 	{
-		NSLog(@"Pass : %@", [pass stringValue]);
-		[plistData setObject:[pass stringValue] forKey:@"Password"];
+		NSLog(@"Pass : %@", [passTextField stringValue]);
+		[Settings setPassword:[passTextField stringValue]];
 	}
-	if (nil != user)
+	if (nil != userTextField)
 	{
-		NSLog(@"User : %@", [user stringValue]);
-		[plistData setObject:[user stringValue] forKey:@"Username"];
+		NSLog(@"User : %@", [userTextField stringValue]);
+		[Settings setUsername:[userTextField stringValue]];
 	}
-
-	[plistData writeToFile:opath atomically: YES];
-	[plistData release];
-	[self myChown:opath];
 }
 
 - (void) loadSettings:(id)sender
 {
-	NSString *ipath = [self makeSettingFileName];
-	
-	struct stat buf;
-	int i = stat ( [ipath cStringUsingEncoding:NSASCIIStringEncoding], &buf );
-	
-	if ( !i ) // File exists
-	{
-		NSMutableDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:ipath];
-		NSString * userName = [plistData valueForKey:@"Username"];
-		NSString * passWord = [plistData valueForKey:@"Password"];
-		[user setStringValue:userName];
-		[pass setStringValue:passWord];
-	}
+	NSString * username = [[Settings copyUsername] autorelease];
+	NSString * password = [[Settings copyPassword] autorelease];
+	[userTextField setStringValue:username];
+	[passTextField setStringValue:password];
 }
 
 - (void)dealloc

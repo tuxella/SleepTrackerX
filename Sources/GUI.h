@@ -28,8 +28,8 @@ typedef struct {
 	IBOutlet id progressIndicator ;
 	
 	
-	IBOutlet NSTextField * user;
-	IBOutlet NSTextField * pass;
+	IBOutlet NSTextField * userTextField;
+	IBOutlet NSTextField * passTextField;
 	
 	NSLock *termioLock ;
 	

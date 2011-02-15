@@ -6,6 +6,7 @@
 //
 
 #import "NightData.h"
+#import "Settings.h"
 
 #include <termios.h>
 #include <pwd.h>
@@ -404,37 +405,6 @@
 	 return(ret);
 }
 
-- (NSString *) makeSettingFileName
-{
-	//FIXME : shoulnd't be here
-	struct passwd *passwd; 
-	passwd = getpwuid ( getuid());
-	
-	NSString * userName = [[NSString alloc] initWithCString:passwd->pw_name encoding:NSASCIIStringEncoding] ;
-	
-	
-	NSString *opath = @"/Users/";
-	opath = [opath stringByAppendingString:userName];
-	opath = [opath stringByAppendingString:@"/.SleepTrackerX/"];
-	
-	struct stat buf;
-	int i = stat ( [opath cStringUsingEncoding:NSASCIIStringEncoding], &buf );
-	
-	if ( i ) // File exists
-	{
-		int ret = mkdir([opath cStringUsingEncoding:NSASCIIStringEncoding], S_IRWXU);
-		
-		if (ret)
-		{
-			NSLog(@"Error while creating dir : %d", ret);
-			return (nil);
-		}
-	}
-	chown([opath cStringUsingEncoding:NSASCIIStringEncoding], passwd->pw_uid, passwd->pw_gid);
-	opath = [opath stringByAppendingString:@"Settings.plist"];	
-	
-	return(opath);
-}
 
 
 - (NSString*) newURL
@@ -478,20 +448,9 @@
 	
 	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:@"%d:%@", (int)[self dataA]/60, [formatter stringFromNumber:[[NSNumber alloc] initWithInteger:((int)[self dataA] % 60)]]]];
 	 
-	NSString *ipath = [self makeSettingFileName];
-	
-	NSString * username;
-	NSString * password;
+	NSString * username = [Settings copyUsername];
+	NSString * password = [Settings copyPassword];
 
-	struct stat buf;
-	i = stat ([ipath cStringUsingEncoding:NSASCIIStringEncoding], &buf);
-	
-	if ( !i ) // File exists
-	{
-		NSMutableDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:ipath];
-		username = [plistData valueForKey:@"Username"];
-		password = [plistData valueForKey:@"Password"];
-	}
 	if (([username length] <= 0) || ([password length] <= 0))
 	{
 		[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"Username / Password have not been set" ] defaultButton:@"OK" alternateButton:nil otherButton:nil 

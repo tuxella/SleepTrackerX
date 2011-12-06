@@ -19,7 +19,7 @@
 - (void) setState:(NSInteger) state {
 	@synchronized(self) {
 		connectionState = state;
-		NSLog(@"Connection state changed to: %d", state);
+		NSLog(@"Connection state changed to: %ld", state);
 	}
 }
 

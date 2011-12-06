@@ -26,3 +26,4 @@
 #define	cstNotReadyYet					6
 #define	cstDataRetrieved				7
 #define	cstDataProcessed				8
+#define	cstErrorInDataProcessing		9

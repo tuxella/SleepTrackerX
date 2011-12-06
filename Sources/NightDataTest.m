@@ -162,13 +162,13 @@
 	
 	for (int i = 0; i < [myND.aaArray count]; ++i)
 	{
-		NSLog(@"%s", [df stringFromDate:[myND.aaArray objectAtIndex:i]]);
+		NSLog(@"%@", [df stringFromDate:[myND.aaArray objectAtIndex:i]]);
 	}
 	
 	NSLog(@"Expected dates : ");	
 	for (int i = 0; i < [expectedAADate count]; ++i)
 	{
-		NSLog(@"%s", [df stringFromDate:[expectedAADate objectAtIndex:i]]);
+		NSLog(@"%@", [df stringFromDate:[expectedAADate objectAtIndex:i]]);
 	}
 	STAssertEqualObjects(myND.aaArray, expectedAADate, nil);	
 }

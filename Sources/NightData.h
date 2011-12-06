@@ -29,11 +29,11 @@
 @property(readonly) BOOL isReady;
 
 //These properties are only used for the unit tests by now
-@property(readonly) NSTimeInterval dataA;
-@property(readonly) NSNumber * window;
-@property(readonly) NSMutableArray * aaArray;
-@property(readonly) NSDate * TBDate;
-@property(readonly) NSDate * ADate;
+@property(readwrite) NSTimeInterval dataA;
+@property(retain) NSNumber * window;
+@property(retain) NSMutableArray * aaArray;
+@property(retain) NSDate * TBDate;
+@property(retain) NSDate * ADate;
 
 
 - (id)init;

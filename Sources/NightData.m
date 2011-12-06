@@ -250,7 +250,7 @@
 	}
 }
 
-- (NSTimeInterval)dataA
+- (NSTimeInterval)dataARaw
 {
 	NSTimeInterval nightLength = 0;
 //		[self coalesceAAarray];
@@ -264,7 +264,7 @@
 
 - (NSString *) dataAStr {
     NSLog(@"Processing dataA");
-    int da = [self dataA];
+    int da = [self dataARaw];
     int h = (int)(da / 3600);
     int m = (int)((da / 60) % 60);
     

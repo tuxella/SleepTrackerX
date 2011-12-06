@@ -350,7 +350,9 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 		[report release];
 	
 		//Retrieve URL and open it in the default browser of the user
+
 		NSString * sleeptrackerNetURL = [myND newURL];
+        NSLog(@"Opening URL : %@", sleeptrackerNetURL);
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:sleeptrackerNetURL]];
 		[sleeptrackerNetURL release];
 

@@ -353,15 +353,21 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 
 		NSString * sleeptrackerNetURL = [myND newURL];
         NSLog(@"Opening URL : %@", sleeptrackerNetURL);
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:sleeptrackerNetURL]];
-		[sleeptrackerNetURL release];
+        if (![[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:sleeptrackerNetURL]]) {
+            [viewableData appendFormat:@"\nWe couln't open the web page in your browser. If you want to upload your data to sleeptracker.net, copy and paste this URL in your browser: %@", sleeptrackerNetURL];
+        }
 
 		NSRange insertion ;
 		insertion.location = [ [ self string ] length ] ;
 		insertion.length = 0 ;
 		[ self setSelectedRange:insertion ] ;
+        
 		[ self insertText:viewableData ] ;
+        
+        
 		[ self setNeedsDisplay:YES ] ;		//  v0.2
+        
+        [sleeptrackerNetURL release];
 	}
 }
 

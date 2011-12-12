@@ -265,8 +265,8 @@
 - (NSString *) dataAStr {
     NSLog(@"Processing dataA");
     int da = [self dataARaw];
-    int h = (int)(da / 3600);
-    int m = (int)((da / 60) % 60);
+    int h = (int)(da / 60);
+    int m = (int)(da % 60);
     
     return ([[NSString alloc] initWithFormat:@"%d:%d", h, m]);           
 }

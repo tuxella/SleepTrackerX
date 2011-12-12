@@ -79,7 +79,7 @@
 	self = [super init];
 	self.alarmAndBedTimeAreLoaded = NO;
 	self.nightDataIsLoaded = NO;
-	[self readDate:nil]; //FIXME when the date will be retrieved from the watch
+	[self readDate:nil];
 	
 	return(self);
 }
@@ -221,7 +221,7 @@
 - (void) coalesceAAarray
 {
 	NSTimeInterval windowTimeInterval;
-	windowTimeInterval = [_window intValue] * 60; // FIXME : when window will be a NSInteger
+	windowTimeInterval = [_window intValue] * 60;
 	if ([_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:[_aaArray count] - 2]] < windowTimeInterval)
 	{
 		NSLog(@"Removing last date (alarm date) because it is in the window: %@", _ADate);
@@ -233,14 +233,12 @@
 
 - (BOOL) readDate:(const char *) buffer
 {
-	//FIXME : should use the actual date from the watch, but by now we can't retrieve it...
 	_watchDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
 	return(YES);
 }
 
 - (NSInteger) sleepIntervalCount
 {
-	//[self coalesceAAarray];
 	if (1 >= [_aaArray count]) {
 		return (0);
 	}
@@ -253,8 +251,6 @@
 - (NSTimeInterval)dataARaw
 {
 	NSTimeInterval nightLength = 0;
-//		[self coalesceAAarray];
-//		NSLog(@"night length before: %@", nightLength);
 	NSLog(@"Adate : %@, TBDate: %@", [self ADate], [self TBDate]);
 	nightLength = [_ADate timeIntervalSinceDate:[self TBDate]];
 
@@ -297,7 +293,6 @@
 		
 		NSDate *myNow = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
 		
-//		NSDateFormatter *df = [[[NSDateFormatter alloc] init] autorelease]; // format dd-MM-yyyy
 		static NSDateFormatter *df;
 		if (nil == df)
 		{
@@ -352,10 +347,9 @@
 			tmpDate = [df dateFromString:stringSTDate];
 			[_aaArray addObject:tmpDate];
 		}
-		NSInteger numberOfSleepIntervals = [[self aaArray] count] + 1;
 		NSDate * lastAwakening = [self ADate];
 		NSDate * actualToBed = [self TBDate];
-		//[ADate timeIntervalSinceDate [aaArray objectAtIndex:([aaArray count] - 1)]];
+
 		NSTimeInterval timeIntBtwAlarmAndLastAwakening = [_ADate timeIntervalSinceDate:[_aaArray objectAtIndex:([_aaArray count] - 1)]];
 		NSLog(@"WIndow = %@", [self window]);
 		NSLog(@"TBDate = %@", [self TBDate]);
@@ -363,7 +357,6 @@
 		if ([[self window] compare:[[NSNumber alloc] initWithFloat:(timeIntBtwAlarmAndLastAwakening / 60)]] == NSOrderedDescending) // last awakening in the window
 		{
 			lastAwakening = [_aaArray objectAtIndex:([_aaArray count] - 1)];
-			numberOfSleepIntervals = [_aaArray count];
 		}
 		if ([[self TBDate] compare:lastAwakening] == NSOrderedDescending) // TBDate > Last awakening
 		{
@@ -371,9 +364,6 @@
 			actualToBed = [[self TBDate] dateByAddingTimeInterval:(float) -60*60*24];
 		}
 		
-		
-		NSTimeInterval sleepLength = [lastAwakening timeIntervalSinceDate:actualToBed];
-//		_dataA = sleepLength / numberOfSleepIntervals;
 		[myNow dealloc];
 		
 		self.alarmAndBedTimeAreLoaded = YES;
@@ -420,7 +410,7 @@
 	}
 
 	NSLog(@"DataA : %@", [self dataAStr]);
-	NSString *unixTime = [NSString stringWithFormat:[self dataAStr]];;
+	NSString *unixTime = [NSString stringWithFormat:@"%@", [self dataAStr]];;
 
 	[ret appendFormat:@"%@\n",@"dataA"];
 	[ret appendFormat:@"%@\n", unixTime];
@@ -462,21 +452,12 @@
 			itemsAppened ++;
 		}
 	}
-//	NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
-//	[formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-//	[formatter setFormatWidth:2];
-	
-//	[formatter setPaddingPosition:NSNumberFormatterPadBeforePrefix];
-//	[formatter setPaddingCharacter:@"0"];
-	
-//	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:[self dataAStr]]];
-	 
 	NSString * username = [Settings copyUsername];
 	NSString * password = [Settings copyPassword];
 
 	if (([username length] <= 0) || ([password length] <= 0))
 	{
-		[ [ NSAlert alertWithMessageText:[ NSString stringWithFormat:@"Username / Password have not been set" ] defaultButton:@"OK" alternateButton:nil otherButton:nil 
+		[ [ NSAlert alertWithMessageText:@"Username / Password have not been set" defaultButton:@"OK" alternateButton:nil otherButton:nil 
 			   informativeTextWithFormat:@"Username or Password have not been set. You must set them in the 'Settings' tab to be able to load your data" ] runModal ] ;
 		return @"Error : no username / password";
 	}

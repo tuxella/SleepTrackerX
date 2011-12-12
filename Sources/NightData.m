@@ -448,28 +448,28 @@
 	int i;
 
 	NSInteger itemsAppened = 0;
-	for (i = 0; i < [_aaArray count]; ++i)
+	for (i = 0; i < [[self aaArray] count]; ++i)
 	{
-		NSLog(@"TB : %@, A : %@, aa = %@", _TBDate, _ADate, [_aaArray objectAtIndex:i]);
-		if (![_TBDate isEqualToDate:[_aaArray objectAtIndex:i]] &&
-			![_ADate isEqualToDate:[_aaArray objectAtIndex:i]])
+		NSLog(@"TB : %@, A : %@, aa = %@", _TBDate, _ADate, [[self aaArray] objectAtIndex:i]);
+		if (![_TBDate isEqualToDate:[[self aaArray] objectAtIndex:i]] &&
+			![_ADate isEqualToDate:[[self aaArray] objectAtIndex:i]])
 		{
 			if (0 < itemsAppened)
 			{
 				[ret appendString:@","];
 			}
-			[ret appendFormat:@"%@", [df stringFromDate:[_aaArray objectAtIndex:i]]];
+			[ret appendFormat:@"%@", [df stringFromDate:[[self aaArray] objectAtIndex:i]]];
 			itemsAppened ++;
 		}
 	}
-	NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
-	[formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-	[formatter setFormatWidth:2];
+//	NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
+//	[formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+//	[formatter setFormatWidth:2];
 	
-	[formatter setPaddingPosition:NSNumberFormatterPadBeforePrefix];
-	[formatter setPaddingCharacter:@"0"];
+//	[formatter setPaddingPosition:NSNumberFormatterPadBeforePrefix];
+//	[formatter setPaddingCharacter:@"0"];
 	
-	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:[self dataAStr]]];
+//	[ret appendFormat:@"&da=%@", [NSString stringWithFormat:[self dataAStr]]];
 	 
 	NSString * username = [Settings copyUsername];
 	NSString * password = [Settings copyPassword];

@@ -572,7 +572,7 @@ int openPort( const char *path, int speed, int bits, int parity, int stops, int 
 //					if ( FD_ISSET( inputfd, &readfds ) ) break ;		//  exit if error in stream
 					if ( selectCount > 0 && FD_ISSET( inputfd, &readfds ) )
                     {
-                        [ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.01 ] ] ;
+                        [ NSThread sleepUntilDate:[ NSDate dateWithTimeIntervalSinceNow:0.1 ] ] ;
                         bytesRead = read( inputfd, buffer, 1024 ) ;
                         if ((0 == buffer[0]) && (0xC0 == buffer[1]))
                         {
